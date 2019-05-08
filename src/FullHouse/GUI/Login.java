@@ -6,15 +6,15 @@ package FullHouse.GUI;
 
 import java.sql.*;
 
+import static FullHouse.DBConnector.DBConnector.query;
+
 public class Login {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://18148875@meru.hhs.nl","18148875","ad3pauheef");
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM aantal");
+        ResultSet rs = query("SELECT * FROM aantal");
+        int i = 1;
         while(rs.next()){
-            System.out.println("Aantal: " + rs.getInt(1));
+            System.out.println(rs.getInt(i));
+            i++;
         }
-        con.close();
     }
 }
