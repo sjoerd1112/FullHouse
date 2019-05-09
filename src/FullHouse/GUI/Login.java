@@ -13,10 +13,10 @@ import java.sql.*;
 import static FullHouse.DB.DBConnector.query;
 
 public class Login {
+    private static JFrame frame = new JFrame("FullHouse");
+    private static JPanel loginPanel;
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        JFrame frame = new JFrame("FullHouse");
-        JPanel loginPanel = new JPanel(new GridLayout(6, 5));
-
+        loginPanel = new JPanel(new GridLayout(6, 5));
         loginPanel.add(new JLabel("Login"));
         for(int i = 0;i<5;i++){
             loginPanel.add(new JLabel());
@@ -32,18 +32,10 @@ public class Login {
         loginPanel.add(melding);
         JTextField passwordTextfield = new JTextField();
         loginPanel.add(passwordTextfield);
-        for(int i = 0;i<4;i++){
-            loginPanel.add(new JLabel());
-        }
+        addLabel(4);
         JButton resetPassButton = new JButton("Reset wachtwoord");
         loginPanel.add(resetPassButton);
-        for(int i = 0;i<4;i++){
-            loginPanel.add(new JLabel());
-        }
-
-        for(int i = 0;i<6;i++){
-            loginPanel.add(new JLabel());
-        }
+        addLabel(10);
         JButton confirmButton = new JButton("Ok");
         loginPanel.add(confirmButton);
 
@@ -51,7 +43,6 @@ public class Login {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(800,250);
         frame.setVisible(true);
-
 
         confirmButton.addActionListener(new ActionListener() {
             @Override
@@ -63,11 +54,14 @@ public class Login {
                     melding.setText("Vul beide velden in");
                 }
                 else{
-                    String query = ("SELECT id FROM login WHERE '" + username + "'=Gebruikersnaam AND '" + password + "'=Wachtwoord");
+                    String query = ("SELECT id FROM login WHERE '" + username + "'= Gebruikersnaam AND '" + password.hashCode() + "'= Wachtwoord");
                     try {
                         ResultSet rs = query(query);
                         while(rs.next()){
                             System.out.println(rs.getInt(1));
+                        }
+                        if(rs.next() == false){
+                            System.out.println("Hier");
                         }
                     } catch (SQLException e1) {
                         e1.printStackTrace();
@@ -77,5 +71,11 @@ public class Login {
                 }
             }
         });
+    }
+
+    public static void addLabel(int aantal){
+        for(int i = 0;i<aantal;i++){
+            loginPanel.add(new JLabel());
+        }
     }
 }
