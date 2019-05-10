@@ -23,7 +23,7 @@ public class addSpeler {
         boolean bestaatAl = false;
         while(rs.next()){
             if(rs.getString(1).equals(gebruikersnaam)){
-                System.out.println("Deze gebruiker bestaat al");
+                System.out.println("Gebruiker "+gebruikersnaam+" bestaat al");
                 bestaatAl = true;
             }
         }

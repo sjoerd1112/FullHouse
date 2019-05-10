@@ -22,10 +22,9 @@ public class Login {
             loginPanel.add(new JLabel());
         }
         loginPanel.add(new JLabel("Gebruikersnaam"));
-        loginPanel.add(new JLabel());
+        addLabel(1);
         loginPanel.add(new JLabel("Wachtwoord"));
-        loginPanel.add(new JLabel());
-        loginPanel.add(new JLabel());
+        addLabel(2);
         JTextField userTextfield = new JTextField();
         loginPanel.add(userTextfield);
         JLabel melding = new JLabel();
