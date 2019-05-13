@@ -9,10 +9,13 @@ public class DBConnector {
     private static Connection con;
     private static Statement stmt;
 
-    public static ResultSet query(String query) throws SQLException, ClassNotFoundException {
+    public static void startConnection() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.jdbc.Driver");
         con = DriverManager.getConnection("jdbc:mysql://meru.hhs.nl:3306/18148875", "18148875", "ad3pauheef");
         stmt = con.createStatement();
+    }
+
+    public static ResultSet query(String query) throws SQLException {
         ResultSet rs = stmt.executeQuery(query);
         return rs;
     }

@@ -9,7 +9,7 @@ import static FullHouse.DB.DBConnector.updateQuery;
 /**
  * Created by sjoer on 10-5-2019.
  */
-public class addSpeler {
+public class addGebruiker {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Vul gebruikersnaam in: ");

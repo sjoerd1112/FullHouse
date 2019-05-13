@@ -15,7 +15,7 @@ import static FullHouse.DB.DBConnector.query;
 public class Login {
     private static JFrame frame = new JFrame("FullHouse");
     private static JPanel loginPanel;
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+    public static void showLogin() throws SQLException, ClassNotFoundException {
         loginPanel = new JPanel(new GridLayout(6, 5));
         loginPanel.add(new JLabel("Login"));
         for(int i = 0;i<5;i++){
@@ -29,7 +29,7 @@ public class Login {
         loginPanel.add(userTextfield);
         JLabel melding = new JLabel();
         loginPanel.add(melding);
-        JTextField passwordTextfield = new JTextField();
+        JPasswordField passwordTextfield = new JPasswordField();
         loginPanel.add(passwordTextfield);
         addLabel(4);
         JButton resetPassButton = new JButton("Reset wachtwoord");
@@ -57,14 +57,14 @@ public class Login {
                     try {
                         ResultSet rs = query(query);
                         while(rs.next()){
+                            melding.setText("");
                             System.out.println(rs.getInt(1));
+                            Home.showHome(frame, loginPanel);
                         }
                         if(rs.next() == false){
-                            System.out.println("Hier");
+                            melding.setText("onjuiste combinatie");
                         }
                     } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    } catch (ClassNotFoundException e1) {
                         e1.printStackTrace();
                     }
                 }
