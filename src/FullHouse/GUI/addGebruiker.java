@@ -125,7 +125,7 @@ public class addGebruiker {
                 melding.setText("Vul beide velden in");
             }
             else {
-                query = ("INSERT INTO `login` (`Gebruikersnaam`, `Wachtwoord`) VALUES (" + gebruikersnaam + "', '" + wachtwoordHash + "')");
+                query = ("INSERT INTO `login` (`Gebruikersnaam`, `Wachtwoord`) VALUES ('" + gebruikersnaam + "', '" + wachtwoordHash + "')");
                 if (updateQuery(query) == 1) {
                     melding.setText("<html>Gebruiker " + gebruikersnaam + "<br> aangemaakt.</html>");
                 }
