@@ -8,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.*;
 
 import static FullHouse.DB.DBConnector.query;
@@ -30,11 +32,11 @@ public class Login {
         loginPanel.add(userTextfield);
         loginPanel.add(melding);
         loginPanel.add(passwordTextfield);
-        addLabel(4);
-        JButton resetPassButton = new JButton("Reset wachtwoord");
-        loginPanel.add(resetPassButton);
+        addLabel(5);
         addLabel(10);
         JButton confirmButton = new JButton("Ok");
+        userTextfield.addKeyListener(new checkButton());
+        passwordTextfield.addKeyListener(new checkButton());
         loginPanel.add(confirmButton);
 
         frame.add(loginPanel);
@@ -46,11 +48,7 @@ public class Login {
         confirmButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String username = userTextfield.getText();
-                String password = passwordTextfield.getText();
-                if(checkLogin(username, password)){
-                    Home.showHome(frame, loginPanel);
-                }
+                confirmButton();
             }
         });
     }
@@ -63,12 +61,30 @@ public class Login {
         frame.setSize(800,250);
     }
 
+    private static class checkButton extends KeyAdapter{
+
+        @Override
+        public void keyPressed(KeyEvent e){
+            if(e.getKeyCode()== KeyEvent.VK_ENTER){
+                confirmButton();
+            }
+        }
+    }
+
+    public static void confirmButton(){
+        String username = userTextfield.getText();
+        String password = passwordTextfield.getText();
+        if(checkLogin(username, password)){
+            Home.showHome(frame, loginPanel);
+        }
+    }
+
     public static boolean checkLogin(String gebruikersnaam, String wachtwoord){
         if (gebruikersnaam.equals("") || wachtwoord.equals("")) {
             melding.setText("Vul beide velden in");
             return false;
         } else {
-            String query = ("SELECT id FROM login WHERE '" + gebruikersnaam + "'= Gebruikersnaam AND '" + wachtwoord.hashCode() + "'= Wachtwoord");
+            String query = ("SELECT Gebruikersnaam FROM login WHERE '" + gebruikersnaam + "'= Gebruikersnaam AND '" + wachtwoord.hashCode() + "'= Wachtwoord");
             try {
                 ResultSet rs = query(query);
                 while (rs.next()) {

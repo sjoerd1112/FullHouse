@@ -36,7 +36,7 @@ public class Home {
             spelers.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    System.out.println("Spelers");
+                    Spelers.showSpelers(frame, homePanel);
                 }
             });
 
@@ -64,7 +64,7 @@ public class Home {
             toevoegen.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    FullHouse.GUI.addGebruiker.showToevoegen(frame, homePanel);
+                    addGebruiker.showToevoegen(frame, homePanel);
                 }
             });
 
@@ -80,10 +80,15 @@ public class Home {
         else{
             frame.remove(panel);
             frame.add(homePanel);
-
             frame.pack();
             frame.setSize(800,250);
         }
+    }
+
+    public static void showHome(JFrame frame){
+        frame.add(homePanel);
+        frame.pack();
+        frame.setSize(800,250);
     }
 
     public static void addLabel(int aantal){

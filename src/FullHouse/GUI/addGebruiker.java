@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import static FullHouse.DB.DBConnector.query;
@@ -16,6 +18,8 @@ public class addGebruiker {
     private static JPanel gebruikerPanel = new JPanel(new GridLayout(6,5));
     private static JLabel melding = new JLabel();
     private static boolean created = false;
+    private static JTextField userTextfield = new JTextField();
+    private static JPasswordField passwordTextfield = new JPasswordField();
 
     public static void showToevoegen(JFrame frame, JPanel panel) {
         if(!created) {
@@ -30,10 +34,10 @@ public class addGebruiker {
             addLabel(1);
             gebruikerPanel.add(new JLabel("Wachtwoord"));
             addLabel(2);
-            JTextField userTextfield = new JTextField();
+            userTextfield.addKeyListener(new checkButton());
+            passwordTextfield.addKeyListener(new checkButton());
             gebruikerPanel.add(userTextfield);
             gebruikerPanel.add(melding);
-            JPasswordField passwordTextfield = new JPasswordField();
             gebruikerPanel.add(passwordTextfield);
             addLabel(15);
             JButton confirmButton = new JButton("Ok");
@@ -80,6 +84,28 @@ public class addGebruiker {
         for(int i = 0;i<aantal;i++){
             gebruikerPanel.add(new JLabel());
         }
+    }
+
+    private static class checkButton extends KeyAdapter {
+
+        @Override
+        public void keyPressed(KeyEvent e){
+            if(e.getKeyCode()== KeyEvent.VK_ENTER){
+                try {
+                    confirmButton();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (ClassNotFoundException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static void confirmButton() throws SQLException, ClassNotFoundException {
+        String username = userTextfield.getText();
+        String password = passwordTextfield.getText();
+        addGebruiker(username, password);
     }
 
     public static void addGebruiker(String gebruikersnaam, String wachtwoord) throws SQLException, ClassNotFoundException {
