@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 /**
  * Created by sjoer on 13-5-2019.
@@ -36,7 +37,12 @@ public class Home {
             spelers.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Spelers.showSpelers(frame, homePanel);
+                    try {
+                        String query = "SELECT naam, id FROM Speler";
+                        Spelers.showSpelers(frame, homePanel, query);
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             });
 
