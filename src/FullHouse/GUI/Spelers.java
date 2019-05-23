@@ -13,9 +13,8 @@ import javax.swing.*;
 
 public class Spelers {
     private static int rows = 0;
-    private static int aantal = 1;
+    private static int aantal = 7;
     private static boolean created = false;
-    private static JButton naamButton = new JButton();
     private static JScrollPane scroll = new JScrollPane();
 
     public static void showSpelers(JFrame frame, JPanel panel, String query) throws SQLException {
@@ -65,7 +64,7 @@ public class Spelers {
                     }
                 }
 
-                naamButton = new JButton(naam);
+                JButton naamButton = new JButton(naam);
                 naamButton.setPreferredSize(new Dimension(100, 100));
                 int id = rs.getInt("id");
                 naamButton.putClientProperty("id", id);
@@ -92,7 +91,10 @@ public class Spelers {
             toevoegen.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    System.out.println("Toevoegen");
+                    frame.getContentPane().remove(scroll);
+                    created = false;
+                    aantal = 7;
+                    addSpeler.showAddSpeler(frame, panel);
                 }
             });
 
@@ -104,7 +106,7 @@ public class Spelers {
                         String query = "SELECT naam, id FROM Speler WHERE naam LIKE'%"+zoekNaam+"%'";
                         created = false;
                         frame.getContentPane().remove(scroll);
-                        aantal = 1;
+                        aantal = 7;
                         showSpelers(frame, panel, query);
                     }
                     catch (SQLException e1) {
@@ -117,6 +119,8 @@ public class Spelers {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     frame.remove(scroll);
+                    created = false;
+                    aantal = 7;
                     Home.showHome(frame);
                 }
             });

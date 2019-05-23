@@ -27,4 +27,12 @@ public class DBConnector {
         int rs = stmt.executeUpdate(query);
         return rs;
     }
+
+    public static boolean executeQuery(String query) throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://meru.hhs.nl:3306/18148875", "18148875", "ad3pauheef");
+        Statement stmt = con.createStatement();
+        boolean rs = stmt.execute(query);
+        return rs;
+    }
 }

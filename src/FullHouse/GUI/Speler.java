@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static FullHouse.DB.DBConnector.query;
 
@@ -101,7 +103,9 @@ public class Speler{
             woonplaats.setText(rs.getString("woonplaats"));
             telefoonnummer.setText(rs.getString("telefoonnummer"));
             email.setText(rs.getString("email"));
-            gbdatum.setText(rs.getString("geboortedatum"));
+            Date gbDate = rs.getDate("geboortedatum");
+            String datum = new SimpleDateFormat("dd-MM-yyyy").format(gbDate);
+            gbdatum.setText(datum);
             String bepaalGeslacht = rs.getString("geslacht");
             if (bepaalGeslacht.equals("M")) {
                 geslacht.setText("Man");
