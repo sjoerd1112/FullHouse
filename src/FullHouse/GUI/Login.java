@@ -43,6 +43,7 @@ public class Login {
         frame.pack();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(800, 250);
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
         confirmButton.addActionListener(new ActionListener() {

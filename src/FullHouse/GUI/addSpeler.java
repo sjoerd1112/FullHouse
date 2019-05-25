@@ -6,13 +6,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import static FullHouse.Classes.checkDatum.checkDateFormat;
 
 /**
  * Created by sjoer on 22-5-2019.
  */
+
+//JCalendar input
+
+
 public class addSpeler {
     private static boolean created = false;
     private static JPanel addSpelerPanel = new JPanel(new GridLayout(5, 5, 5, 5));
@@ -53,7 +57,7 @@ public class addSpeler {
             addSpelerPanel.add(new JLabel());
             addSpelerPanel.add(new JLabel("<html>Geboortedatum:<br>(dd-mm-jjjj)</html>"));
             addSpelerPanel.add(gbdatum);
-            addSpelerPanel.add(new JLabel("Geslacht: "));
+            addSpelerPanel.add(new JLabel("<html>Geslacht:<br>(M/V)</html>"));
             addSpelerPanel.add(geslacht);
             addSpelerPanel.add(new JLabel());
             addSpelerPanel.add(new JLabel());
@@ -117,7 +121,6 @@ public class addSpeler {
                     } else {
                         gbdatum.setBorder(BorderFactory.createLineBorder(Color.GRAY));
                         String gb = gbdatum.getText();
-                        System.out.println(checkDateFormat(gb));
                         gbdate = checkDateFormat(gb);
                         if (gbdate.equals("incorrect")) {
                             melding.setText("geboortedatum incorrect");
@@ -139,7 +142,13 @@ public class addSpeler {
                         String query = "insert into Speler(naam, adres, woonplaats, telefoonnummer, email, geboortedatum, geslacht) VALUES ('" + naam.getText() + "','" + adres.getText() + "','" + woonplaats.getText() + "'," + telnummer + ",'" + email.getText() + "','" + gbdate + "','" + geslacht.getText() + "')";
                         try {
                             DBConnector.executeQuery(query);
-                            melding.setText("Speler "+naam.getText()+" aangemaakt");
+                            query = "SELECT id FROM Speler WHERE id = (SELECT max(id) FROM Speler)";
+                            ResultSet rs = DBConnector.query(query);
+                            if(rs.next()){
+                                int id = rs.getInt("id");
+                                frame.remove(addSpelerPanel);
+                                Speler.showSpeler(frame, id);
+                            }
                         } catch (SQLException e1) {
                             e1.printStackTrace();
                         } catch (ClassNotFoundException e1) {
@@ -168,43 +177,6 @@ public class addSpeler {
             frame.add(addSpelerPanel);
             frame.pack();
             frame.setSize(800,250);
-        }
-    }
-
-    public static String checkDateFormat(String date) {
-        if (date.length() == 10) {
-            if (date.charAt(2) == '-' && date.charAt(5) == '-') {
-                String jaar = String.valueOf(date.charAt(6));
-                jaar += String.valueOf(date.charAt(7));
-                jaar += String.valueOf(date.charAt(8));
-                jaar += String.valueOf(date.charAt(9));
-                int jaarInt = Integer.parseInt(jaar);
-                if (jaarInt < 0) {
-                    return "incorrect";
-                }
-
-                String maand = String.valueOf(date.charAt(3));
-                maand += String.valueOf(date.charAt(4));
-                int maandInt = Integer.parseInt(maand);
-                if (maandInt > 12 || maandInt < 1) {
-                    return "incorrect";
-                }
-
-                String dag = String.valueOf(date.charAt(0));
-                dag += String.valueOf(date.charAt(1));
-                int dagInt = Integer.parseInt(dag);
-                if (dagInt > 31 || dagInt < 1) {
-                    return "incorrect";
-                }
-
-                Date parseDate = new Date(jaarInt - 1900, maandInt - 1, dagInt);
-                String datum = new SimpleDateFormat("yyyy-MM-dd").format(parseDate);
-                return datum;
-            } else {
-                return "incorrect";
-            }
-        } else {
-            return "incorrect";
         }
     }
 }

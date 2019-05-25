@@ -1,5 +1,7 @@
 package FullHouse.GUI;
 
+import FullHouse.DB.DBConnector;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,7 +9,7 @@ import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 
 import static FullHouse.DB.DBConnector.query;
 
@@ -78,8 +80,34 @@ public class Speler{
                 public void actionPerformed(ActionEvent e) {
                     try {
                         String query = "SELECT naam, id FROM Speler";
-                        Spelers.showSpelers(frame, spelerPanel,query);
+                        Spelers.showSpelers(frame, spelerPanel, query);
                     } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
+
+            wijzigen.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        wijzigSpeler.showWijzigSpeler(frame, spelerPanel, id);
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    } catch (ClassNotFoundException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
+
+            verwijderen.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        verwijderSpeler(id, frame);
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    } catch (ClassNotFoundException e1) {
                         e1.printStackTrace();
                     }
                 }
@@ -94,6 +122,18 @@ public class Speler{
         created = true;
     }
 
+    public static void verwijderSpeler(int id, JFrame frame) throws SQLException, ClassNotFoundException {
+        if(JOptionPane.showConfirmDialog(null, "Wilt u deze speler verwijderen", "WARNING", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+            String query = "delete from Speler where id = "+id;
+            DBConnector.executeQuery(query);
+            query = "SELECT naam, id FROM Speler";
+            Spelers.showSpelers(frame, spelerPanel, query);
+        }
+        else{
+
+        }
+
+    }
 
     public static void setText(String query) throws SQLException {
         ResultSet rs = query(query);
@@ -101,7 +141,7 @@ public class Speler{
             naam.setText(rs.getString("naam"));
             adres.setText(rs.getString("adres"));
             woonplaats.setText(rs.getString("woonplaats"));
-            telefoonnummer.setText(rs.getString("telefoonnummer"));
+            telefoonnummer.setText("0"+rs.getString("telefoonnummer"));
             email.setText(rs.getString("email"));
             Date gbDate = rs.getDate("geboortedatum");
             String datum = new SimpleDateFormat("dd-MM-yyyy").format(gbDate);

@@ -5,8 +5,7 @@ import FullHouse.DB.DBConnector;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.*;
@@ -16,6 +15,7 @@ public class Spelers {
     private static int aantal = 7;
     private static boolean created = false;
     private static JScrollPane scroll = new JScrollPane();
+    private static JTextField zoeken = new JTextField();
 
     public static void showSpelers(JFrame frame, JPanel panel, String query) throws SQLException {
         if(!created) {
@@ -37,8 +37,21 @@ public class Spelers {
             zoekenLabel.setPreferredSize(new Dimension(100,25));
             spelersPanel.add(zoekenLabel);
 
-            JTextField zoeken = new JTextField();
             zoeken.setPreferredSize(new Dimension(100,25));
+            zoeken.addKeyListener(new KeyListener() {
+                @Override
+                public void keyTyped(KeyEvent e) {
+                }
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if(e.getKeyCode()==KeyEvent.VK_ENTER) {
+                        zoekSpeler(frame, panel);
+                    }
+                }
+                @Override
+                public void keyReleased(KeyEvent e) {
+                }
+            });
             spelersPanel.add(zoeken);
 
             JButton zoek = new JButton("Zoeken");
@@ -78,6 +91,8 @@ public class Spelers {
                         int i = (int) naamButton.getClientProperty("id");
                         try {
                             frame.remove(scroll);
+                            created = false;
+                            aantal = 7;
                             Speler.showSpeler(frame, i);
                         } catch (SQLException e1) {
                             e1.printStackTrace();
@@ -101,17 +116,7 @@ public class Spelers {
             zoek.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    String zoekNaam = zoeken.getText();
-                    try {
-                        String query = "SELECT naam, id FROM Speler WHERE naam LIKE'%"+zoekNaam+"%'";
-                        created = false;
-                        frame.getContentPane().remove(scroll);
-                        aantal = 7;
-                        showSpelers(frame, panel, query);
-                    }
-                    catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
+                    zoekSpeler(frame, panel);
                 }
             });
 
@@ -134,6 +139,7 @@ public class Spelers {
             frame.getContentPane().add(scroll);
             frame.pack();
             frame.setSize(800,250);
+
         }
         else{
             frame.remove(panel);
@@ -146,6 +152,20 @@ public class Spelers {
 
     public static int getRows(){
         return rows;
+    }
+
+    public static void zoekSpeler(JFrame frame, JPanel panel){
+        String zoekNaam = zoeken.getText();
+        try {
+            String query = "SELECT naam, id FROM Speler WHERE naam LIKE'%"+zoekNaam+"%'";
+            created = false;
+            frame.getContentPane().remove(scroll);
+            aantal = 7;
+            showSpelers(frame, panel, query);
+        }
+        catch (SQLException e1) {
+            e1.printStackTrace();
+        }
     }
 
 }
