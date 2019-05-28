@@ -19,14 +19,15 @@ import static FullHouse.DB.DBConnector.query;
 public class Speler{
     private static boolean created = false;
     private static JPanel spelerPanel = new JPanel(new GridLayout(5, 5, 5, 5));
-    private static JLabel naam;
-    private static JLabel adres;
-    private static JLabel woonplaats;
-    private static JLabel telefoonnummer;
-    private static JLabel email;
-    private static JLabel gbdatum;
-    private static JLabel geslacht;
-    private static JLabel rating;
+    private static JLabel naam = new JLabel();
+    private static JLabel adres = new JLabel();
+    private static JLabel woonplaats = new JLabel();
+    private static JLabel telefoonnummer = new JLabel();
+    private static JLabel email = new JLabel();
+    private static JLabel gbdatum = new JLabel();
+    private static JLabel geslacht = new JLabel();
+    private static JLabel rating = new JLabel();
+    private static JLabel type = new JLabel();
 
     public static void showSpeler(JFrame frame, int id) throws SQLException, ClassNotFoundException {
         if(!created) {
@@ -34,19 +35,11 @@ public class Speler{
             JButton terug = new JButton("Terug");
             spelerPanel.add(terug);
             spelerPanel.add(new JLabel());
-            spelerPanel.add(new JLabel());
+            spelerPanel.add(type);
             JButton wijzigen = new JButton("Wijzigen");
             JButton verwijderen = new JButton("Verwijderen");
             spelerPanel.add(wijzigen);
             spelerPanel.add(verwijderen);
-            naam = new JLabel("naam");
-            adres = new JLabel("adres");
-            woonplaats = new JLabel("woonplaats");
-            telefoonnummer = new JLabel("telefoonnummer");
-            email = new JLabel("email");
-            gbdatum = new JLabel("gbdatum");
-            geslacht = new JLabel("geslacht");
-            rating = new JLabel("rating");
             spelerPanel.add(new JLabel("Naam: "));
             spelerPanel.add(naam);
             spelerPanel.add(new JLabel());
@@ -153,6 +146,12 @@ public class Speler{
                 geslacht.setText("Vrouw");
             }
             rating.setText(rs.getString("rating"));
+            if(rs.getInt("bekende_speler")==1){
+                type.setText("Bekende speler");
+            }
+            else{
+                type.setText("Speler");
+            }
         }
 
     }

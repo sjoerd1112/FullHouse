@@ -40,7 +40,8 @@ public class addSpeler {
             JTextField email = new JTextField();
             JTextField gbdatum = new JTextField();
             JTextField geslacht = new JTextField();
-            JTextField rating = new JTextField();
+            String[] types = new String[]{"<html>Gecontracteerde<br>speler</html>","Speler"};
+            JComboBox<String> type = new JComboBox(types);
             addSpelerPanel.add(new JLabel("Naam: "));
             addSpelerPanel.add(naam);
             JLabel melding2 = new JLabel();
@@ -60,8 +61,8 @@ public class addSpeler {
             addSpelerPanel.add(new JLabel("<html>Geslacht:<br>(M/V)</html>"));
             addSpelerPanel.add(geslacht);
             addSpelerPanel.add(new JLabel());
-            addSpelerPanel.add(new JLabel());
-            addSpelerPanel.add(new JLabel());
+            addSpelerPanel.add(new JLabel("Type speler:"));
+            addSpelerPanel.add(type);
 
             frame.add(addSpelerPanel);
             frame.pack();
@@ -133,13 +134,26 @@ public class addSpeler {
                         geslacht.setBorder(BorderFactory.createLineBorder(Color.RED));
                         ingevuld = false;
                     } else {
-                        geslacht.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+                        if(geslacht.getText().equals("M") || geslacht.getText().equals("V")){
+                            geslacht.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+                        }
+                        else{
+                            geslacht.setBorder(BorderFactory.createLineBorder(Color.RED));
+                            ingevuld = false;
+                        }
                     }
 
-
                     if (ingevuld) {
+                        int bekend;
+                        if(type.getSelectedItem().equals("Speler")){
+                            bekend = 0;
+                        }
+                        else{
+                            bekend = 1;
+                        }
+
                         melding.setText("");
-                        String query = "insert into Speler(naam, adres, woonplaats, telefoonnummer, email, geboortedatum, geslacht) VALUES ('" + naam.getText() + "','" + adres.getText() + "','" + woonplaats.getText() + "'," + telnummer + ",'" + email.getText() + "','" + gbdate + "','" + geslacht.getText() + "')";
+                        String query = "insert into Speler(naam, adres, woonplaats, telefoonnummer, email, geboortedatum, geslacht, bekende_speler) VALUES ('" + naam.getText() + "','" + adres.getText() + "','" + woonplaats.getText() + "'," + telnummer + ",'" + email.getText() + "','" + gbdate + "','" + geslacht.getText() + "',"+bekend+")";
                         try {
                             DBConnector.executeQuery(query);
                             query = "SELECT id FROM Speler WHERE id = (SELECT max(id) FROM Speler)";

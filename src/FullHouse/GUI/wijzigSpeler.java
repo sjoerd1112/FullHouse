@@ -24,12 +24,15 @@ public class wijzigSpeler {
     private static JTextField gbdatum = new JTextField();
     private static JTextField geslacht = new JTextField();
     private static JTextField rating = new JTextField();
+    private static JComboBox<String> type;
 
     public static void showWijzigSpeler(JFrame frame, JPanel panel, int id) throws SQLException, ClassNotFoundException {
         frame.remove(panel);
         frame.setTitle("Speler wijzigen");
 
         JPanel spelerPanel = new JPanel(new GridLayout(5,5,5,5));
+        String[] types = new String[]{"<html>Gecontracteerde<br>speler</html>","Speler"};
+        type = new JComboBox(types);
         JButton terug = new JButton("Terug");
         spelerPanel.add(terug);
         spelerPanel.add(new JLabel());
@@ -57,8 +60,8 @@ public class wijzigSpeler {
         spelerPanel.add(new JLabel("<html>Geslacht:<br>(M/V)</html>"));
         spelerPanel.add(geslacht);
         spelerPanel.add(new JLabel());
-        spelerPanel.add(new JLabel());
-        spelerPanel.add(new JLabel());
+        spelerPanel.add(new JLabel("Type speler:"));
+        spelerPanel.add(type);
         setText(id);
 
         frame.add(spelerPanel);
@@ -133,7 +136,13 @@ public class wijzigSpeler {
                     geslacht.setBorder(BorderFactory.createLineBorder(Color.RED));
                     ingevuld = false;
                 } else {
-                    geslacht.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+                    if(geslacht.getText().equals("M") || geslacht.getText().equals("V")){
+                        geslacht.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+                    }
+                    else{
+                        geslacht.setBorder(BorderFactory.createLineBorder(Color.RED));
+                        ingevuld = false;
+                    }
                 }
 
 
@@ -181,6 +190,12 @@ public class wijzigSpeler {
             gbdatum.setText(datum);
             geslacht.setText(rs.getString("geslacht"));
             rating.setText(rs.getString("rating"));
+            if(rs.getInt("bekende_speler")==1){
+                type.setSelectedItem("<html>Gecontracteerde<br>speler</html>");
+            }
+            else{
+                type.setSelectedItem("Speler");
+            }
         }
     }
 }
