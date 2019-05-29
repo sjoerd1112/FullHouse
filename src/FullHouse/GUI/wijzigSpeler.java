@@ -73,33 +73,18 @@ public class wijzigSpeler {
         wijzig.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean ingevuld = true;
+                boolean ingevuld;
                 String gbdate = "";
                 int telnummer = 0;
-                if (naam.getText().equals("")) {
-                    naam.setBorder(BorderFactory.createLineBorder(Color.RED));
-                    ingevuld = false;
-                } else {
-                    naam.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-                }
+                ingevuld = check(naam);
+                System.out.println("naam: " + ingevuld);
+                ingevuld = check(adres);
+                System.out.println("adres: " + ingevuld);
+                ingevuld = check(woonplaats);
+                System.out.println("woonplaats: " + ingevuld);
 
-                if (adres.getText().equals("")) {
-                    adres.setBorder(BorderFactory.createLineBorder(Color.RED));
-                    ingevuld = false;
-                } else {
-                    adres.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-                }
-
-                if (woonplaats.getText().equals("")) {
-                    woonplaats.setBorder(BorderFactory.createLineBorder(Color.RED));
-                    ingevuld = false;
-                } else {
-                    woonplaats.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-                }
-
-                if (telefoonnummer.getText().equals("")) {
-                    telefoonnummer.setBorder(BorderFactory.createLineBorder(Color.RED));
-                    ingevuld = false;
+                if (check(telefoonnummer)) {
+                    System.out.println("telefoonnummer: " + ingevuld);
                 } else {
                     telefoonnummer.setBorder(BorderFactory.createLineBorder(Color.GRAY));
                     if (telefoonnummer.getText().length() == 10) {
@@ -111,12 +96,7 @@ public class wijzigSpeler {
                     }
                 }
 
-                if (email.getText().equals("")) {
-                    email.setBorder(BorderFactory.createLineBorder(Color.RED));
-                    ingevuld = false;
-                } else {
-                    email.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-                }
+                ingevuld = check(email);
 
                 if (gbdatum.getText().equals("")) {
                     gbdatum.setBorder(BorderFactory.createLineBorder(Color.RED));
@@ -145,7 +125,7 @@ public class wijzigSpeler {
                     }
                 }
 
-
+                System.out.println(ingevuld);
                 if (ingevuld) {
                     melding.setText("");
                     String query = "UPDATE Speler SET naam='"+naam.getText()+"', adres='"+adres.getText()+"',woonplaats='"+woonplaats.getText()+"',telefoonnummer="+telnummer+",email='"+email.getText()+"',geboortedatum='"+gbdate+"',geslacht='"+geslacht.getText()+"',rating="+rating.getText()+" WHERE id="+id;
@@ -174,6 +154,18 @@ public class wijzigSpeler {
                 }
             }
         });
+    }
+
+    public static boolean check(JTextField field) {
+        boolean result;
+        if (field.getText().equals("")) {
+            field.setBorder(BorderFactory.createLineBorder(Color.RED));
+            result = false;
+        } else {
+            field.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+            result = true;
+        }
+        return result;
     }
 
     public static void setText(int id) throws SQLException {
