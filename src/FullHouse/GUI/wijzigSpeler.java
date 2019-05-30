@@ -36,9 +36,9 @@ public class wijzigSpeler {
 
     private static JPanel spelerPanel;
 
-    private static void addComponent(Component... panel) {
-        for (Component panels : panel) {
-            spelerPanel.add(panels);
+    private static void addComponent(Component... com) {
+        for (Component components : com) {
+            spelerPanel.add(components);
         }
     }
 
