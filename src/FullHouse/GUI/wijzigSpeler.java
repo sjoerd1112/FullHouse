@@ -36,7 +36,7 @@ public class wijzigSpeler {
 
     private static JPanel spelerPanel;
 
-    private static void addPanel(Component... panel) {
+    private static void addComponent(Component... panel) {
         for (Component panels : panel) {
             spelerPanel.add(panels);
         }
@@ -55,7 +55,7 @@ public class wijzigSpeler {
         JButton wijzig = new JButton("Wijzigen");
 
         //add components to panel
-        addPanel(terug,
+        addComponent(terug,
                 new JLabel(),
                 melding,
                 new JLabel(),
