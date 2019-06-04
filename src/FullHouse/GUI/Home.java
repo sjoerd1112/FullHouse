@@ -49,7 +49,12 @@ public class Home {
             toernooien.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    System.out.println("Toernooien");
+                    try {
+                        String query = "SELECT toernooi_id FROM Toernooi";
+                        Toernooi.showToernooien(frame, homePanel, query);
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             });
 
@@ -84,6 +89,7 @@ public class Home {
             created = true;
         }
         else{
+            frame.setTitle("Home");
             frame.remove(panel);
             frame.add(homePanel);
             frame.pack();
@@ -92,6 +98,7 @@ public class Home {
     }
 
     public static void showHome(JFrame frame){
+        frame.setTitle("Home");
         frame.add(homePanel);
         frame.pack();
         frame.setSize(800,250);

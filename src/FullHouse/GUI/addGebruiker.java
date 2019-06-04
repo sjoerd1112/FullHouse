@@ -73,6 +73,7 @@ public class addGebruiker {
             created = true;
         }
         else{
+            frame.setTitle("Gebruiker Toevoegen");
             frame.remove(panel);
             frame.add(gebruikerPanel);
             frame.pack();

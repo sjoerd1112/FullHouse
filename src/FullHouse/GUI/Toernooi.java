@@ -2,90 +2,91 @@ package FullHouse.GUI;
 
 import FullHouse.DB.DBConnector;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.event.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.*;
 
-public class Spelers {
+public class Toernooi {
+
     private static int rows = 0;
     private static int aantal = 7;
     private static boolean created = false;
+
     private static JScrollPane scroll = new JScrollPane();
     private static JTextField zoeken = new JTextField();
 
-    public static void showSpelers(JFrame frame, JPanel panel, String query) throws SQLException {
-        if (!created) {
-            frame.remove(panel);
-            frame.setTitle("Spelers Overzicht");
-
-            JPanel spelersPanel = new ScrollablePanel();
-            spelersPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+    public static void showToernooien(JFrame frame, JPanel panel, String query) throws SQLException {
+        if(!created) {
+            JPanel toernooiPanel= new ToernooiScrollablePanel();
 
             JButton terug = new JButton("Terug");
-            terug.setPreferredSize(new Dimension(100, 25));
-            spelersPanel.add(terug);
+            JButton zoek = new JButton("Zoeken");
+            JButton toevoegen = new JButton("Toevoegen");
 
+            JLabel zoekenLabel = new JLabel("Zoek toernooi: ");
             JLabel leeg = new JLabel();
-            leeg.setPreferredSize(new Dimension(100, 25));
-            spelersPanel.add(leeg);
+            JLabel empty = new JLabel();
 
-            JLabel zoekenLabel = new JLabel("Zoek speler: ");
-            zoekenLabel.setPreferredSize(new Dimension(100, 25));
-            spelersPanel.add(zoekenLabel);
+            frame.remove(panel);
+            frame.setTitle("Toernooien overzicht");
 
-            zoeken.setPreferredSize(new Dimension(100, 25));
+            toernooiPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+            terug.setPreferredSize(new Dimension(100,25));
+            toernooiPanel.add(terug);
+            leeg.setPreferredSize(new Dimension(100,25));
+            toernooiPanel.add(leeg);
+
+            zoekenLabel.setPreferredSize(new Dimension(100,25));
+            toernooiPanel.add(zoekenLabel);
+
+            zoeken.setPreferredSize(new Dimension(100,25));
             zoeken.addKeyListener(new KeyListener() {
+
                 @Override
                 public void keyTyped(KeyEvent e) {
                 }
-
                 @Override
                 public void keyPressed(KeyEvent e) {
-                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                        zoekSpeler(frame, panel);
+                    if(e.getKeyCode()==KeyEvent.VK_ENTER) {
+                        zoekToernooi(frame, panel);
                     }
                 }
-
                 @Override
                 public void keyReleased(KeyEvent e) {
                 }
             });
-            spelersPanel.add(zoeken);
 
-            JButton zoek = new JButton("Zoeken");
-            zoek.setPreferredSize(new Dimension(100, 25));
-            spelersPanel.add(zoek);
+            toernooiPanel.add(zoeken);
 
-            JLabel empty = new JLabel();
-            empty.setPreferredSize(new Dimension(100, 25));
-            spelersPanel.add(empty);
+            zoek.setPreferredSize(new Dimension(100,25));
+            toernooiPanel.add(zoek);
 
-            JButton toevoegen = new JButton("Toevoegen");
-            toevoegen.setPreferredSize(new Dimension(100, 25));
-            spelersPanel.add(toevoegen);
+            empty.setPreferredSize(new Dimension(100,25));
+            toernooiPanel.add(empty);
+
+            toevoegen.setPreferredSize(new Dimension(100,25));
+            toernooiPanel.add(toevoegen);
 
             ResultSet rs = DBConnector.query(query);
-            while (rs.next()) {
-                String naam = rs.getString("naam");
-                if (naam.length() > 10 && naam.contains(" ")) {
-                    for (int i = 0; i < naam.length(); i++) {
-                        if (naam.charAt(i) == ' ') {
-                            naam = "<html>" + naam.substring(0, i) + "<br>" + naam.substring(i + 1, naam.length()) + "</html>";
+            while(rs.next()){
+                String naam = rs.getString("toernooi_id");
+                if(naam.length()>10 && naam.contains(" ")){
+                    for(int i = 0;i<naam.length();i++){
+                        if(naam.charAt(i) == ' '){
+                            naam = "<html>"+naam.substring(0,i)+"<br>"+naam.substring(i+1, naam.length())+"</html>";
                         }
                     }
                 }
 
                 JButton naamButton = new JButton(naam);
                 naamButton.setPreferredSize(new Dimension(100, 100));
-                int id = rs.getInt("id");
+                int id = rs.getInt("toernooi_id");
                 naamButton.putClientProperty("id", id);
                 aantal++;
 
-                spelersPanel.add(naamButton);
+                toernooiPanel.add(naamButton);
 
                 naamButton.addActionListener(new ActionListener() {
                     @Override
@@ -95,7 +96,7 @@ public class Spelers {
                             frame.remove(scroll);
                             created = false;
                             aantal = 7;
-                            Speler.showSpeler(frame, i);
+                            Toernooien.showToernooi(frame, i);
                         } catch (SQLException e1) {
                             e1.printStackTrace();
                         } catch (ClassNotFoundException e1) {
@@ -111,14 +112,14 @@ public class Spelers {
                     frame.getContentPane().remove(scroll);
                     created = false;
                     aantal = 7;
-                    addSpeler.showAddSpeler(frame, panel);
+                    addToernooi.showAddToernooi(frame, panel);
                 }
             });
 
             zoek.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    zoekSpeler(frame, panel);
+                    zoekToernooi(frame, panel);
                 }
             });
 
@@ -134,43 +135,44 @@ public class Spelers {
 
             rows = Math.round(aantal / 7) + 1;
 
-            scroll.setViewportView(spelersPanel);
+            scroll.setViewportView(toernooiPanel);
             scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
             frame.getContentPane().add(scroll);
             frame.pack();
-            frame.setSize(800, 250);
+            frame.setSize(800,250);
 
-        } else {
+        }
+        else{
+            frame.setTitle("Toernooien overzicht");
             frame.remove(panel);
             frame.getContentPane().add(scroll);
             frame.pack();
-            frame.setSize(800, 250);
+            frame.setSize(800,250);
         }
         created = true;
     }
 
-    public static int getRows() {
+    public static int getRows(){
         return rows;
     }
 
-    public static void zoekSpeler(JFrame frame, JPanel panel) {
+    public static void zoekToernooi(JFrame frame, JPanel panel) {
         String zoekNaam = zoeken.getText();
         try {
-            String query = "SELECT naam, id FROM Speler WHERE naam LIKE'%" + zoekNaam + "%'";
+            String query = "SELECT toernooi_id FROM Toernooi WHERE toernooi_id LIKE'%" + zoekNaam + "%'";
             created = false;
             frame.getContentPane().remove(scroll);
             aantal = 7;
-            showSpelers(frame, panel, query);
+            showToernooien(frame, panel, query);
         } catch (SQLException e1) {
             e1.printStackTrace();
         }
     }
-
 }
 
-class ScrollablePanel extends JPanel implements Scrollable {
+class ToernooiScrollablePanel extends JPanel implements Scrollable {
     public Dimension getPreferredSize() {
         return getPreferredScrollableViewportSize();
     }
@@ -178,7 +180,7 @@ class ScrollablePanel extends JPanel implements Scrollable {
     public Dimension getPreferredScrollableViewportSize() {
         if (getParent() == null)
             return getSize();
-        return new Dimension(10, Spelers.getRows()*105);
+        return new Dimension(10, Toernooi.getRows()*105);
     }
     public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
         return 50;
