@@ -61,7 +61,12 @@ public class Home {
             masterclasses.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    System.out.println("Masterclasses");
+                    try {
+                        String query = "SELECT code, datum FROM masterClass";
+                        Masterclasses.showMasterclasses(frame, homePanel, query);
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             });
 
