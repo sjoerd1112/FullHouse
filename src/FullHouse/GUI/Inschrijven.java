@@ -66,7 +66,7 @@ public class Inschrijven {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     String idString = idInput.getText();
-                    if(idString.matches("[0-9]")){
+                    if(idString.matches("[0-9]+")){
                         melding.setText("");
                         int toernooiId = Integer.parseInt(idString);
                         try {
@@ -125,10 +125,23 @@ public class Inschrijven {
                 melding.setText("<html>Toernooi id <br>bestaat niet</html>");
             }
             else{
-                melding.setText("");
-                query = "INSERT INTO toernooi_inschrijving(speler, toernooi) VALUES ("+id+", "+toernooiId+")";
-                DBConnector.executeQuery(query);
-                idInput.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+                query = "SELECT * FROM toernooi_inschrijving";
+                rs = DBConnector.query(query);
+                boolean al_ingeschreven = false;
+                while(rs.next()){
+                    int speler = rs.getInt("speler");
+                    int toernooi = rs.getInt("toernooi");
+                    if(speler == id && toernooi == toernooiId){
+                        melding.setText("Speler is al ingeschreven");
+                        al_ingeschreven = true;
+                    }
+                }
+                if(!al_ingeschreven) {
+                    melding.setText("Speler ingeschreven");
+                    query = "INSERT INTO toernooi_inschrijving(speler, toernooi) VALUES (" + id + ", " + toernooiId + ")";
+                    DBConnector.executeQuery(query);
+                    idInput.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+                }
             }
         }else{
             String query = "SELECT code FROM masterClass";
@@ -157,7 +170,7 @@ public class Inschrijven {
                     }
                 }
                 if(!al_ingeschreven) {
-                    melding.setText("");
+                    melding.setText("Speler ingeschreven");
                     query = "INSERT INTO mC_inschrijving(masterClass, speler) VALUES (" + toernooiId + ", " + id + ")";
                     DBConnector.executeQuery(query);
                     idInput.setBorder(BorderFactory.createLineBorder(Color.GRAY));

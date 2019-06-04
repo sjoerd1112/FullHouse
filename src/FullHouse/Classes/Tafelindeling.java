@@ -10,7 +10,7 @@ public class Tafelindeling {
     private static ArrayList<Integer> IDs = new ArrayList<>();
 
     public static void main(String[] args) {
-        ArrayList<Tafel> tafelArrayList = aantalPerTafel(111);
+        ArrayList<Tafel> tafelArrayList = aantalPerTafel(155);
     }
 
     public static ArrayList<Tafel> aantalPerTafel(int aantalSpelers) {
