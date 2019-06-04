@@ -34,7 +34,8 @@ public class Speler{
             frame.setTitle("Speler");
             JButton terug = new JButton("Terug");
             spelerPanel.add(terug);
-            spelerPanel.add(new JLabel());
+            JButton inschrijven = new JButton("<html>Inschrijven<br>Uitschrijven</html>");
+            spelerPanel.add(inschrijven);
             spelerPanel.add(type);
             JButton wijzigen = new JButton("Wijzigen");
             JButton verwijderen = new JButton("Verwijderen");
@@ -101,6 +102,17 @@ public class Speler{
                     } catch (SQLException e1) {
                         e1.printStackTrace();
                     } catch (ClassNotFoundException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
+
+            inschrijven.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        Inschrijven.showInschrijven(frame, spelerPanel, id);
+                    } catch (SQLException e1) {
                         e1.printStackTrace();
                     }
                 }

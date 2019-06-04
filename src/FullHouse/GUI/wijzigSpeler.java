@@ -31,8 +31,8 @@ public class wijzigSpeler {
 
     private static int telnummer = 0;
     private static String gbdate = "";
-    private static JLabel melding;
-    private static JLabel melding2;
+    private static JLabel melding = new JLabel();
+    private static JLabel melding2 = new JLabel();
 
     private static JPanel spelerPanel;
 
@@ -50,8 +50,6 @@ public class wijzigSpeler {
         String[] types = new String[]{"<html>Gecontracteerde<br>speler</html>","Speler"};
         type = new JComboBox(types);
         JButton terug = new JButton("Terug");
-        melding = new JLabel();
-        melding2 = new JLabel();
         JButton wijzig = new JButton("Wijzigen");
 
         //add components to panel
@@ -86,8 +84,6 @@ public class wijzigSpeler {
         frame.add(spelerPanel);
         frame.pack();
         frame.setSize(800, 250);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setVisible(true);
 
         wijzig.addActionListener(new ActionListener() {
             @Override
@@ -141,12 +137,22 @@ public class wijzigSpeler {
                 }
 
                 if (!checkValue.contains(false)) {
+                    int bekend;
+                    if(type.getSelectedItem().equals("Speler")){
+                        bekend = 0;
+                    }
+                    else{
+                        bekend = 1;
+                    }
+
                     melding.setText("");
-                    String query = "UPDATE Speler SET naam='"+naam.getText()+"', adres='"+adres.getText()+"',woonplaats='"+woonplaats.getText()+"',telefoonnummer="+telnummer+",email='"+email.getText()+"',geboortedatum='"+gbdate+"',geslacht='"+geslacht.getText()+"',rating="+rating.getText()+" WHERE id="+id;
+                    melding2.setText("");
+                    String query = "UPDATE Speler SET naam='"+naam.getText()+"', adres='"+adres.getText()+"',woonplaats='"+woonplaats.getText()+"',telefoonnummer="+telnummer+",email='"+email.getText()+"',geboortedatum='"+gbdate+"',geslacht='"+geslacht.getText()+"',rating="+rating.getText()+", bekende_speler="+bekend+" WHERE id="+id;
                     try {
                         DBConnector.executeQuery(query);
-                        melding.setText("Speler "+naam.getText()+" gewijzigd");
                         checkValue.clear();
+                        frame.remove(spelerPanel);
+                        Speler.showSpeler(frame, id);
                     } catch (SQLException e1) {
                         e1.printStackTrace();
                     } catch (ClassNotFoundException e1) {

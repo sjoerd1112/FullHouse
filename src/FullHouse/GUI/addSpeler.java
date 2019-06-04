@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+
 import static FullHouse.Classes.checkDatum.checkDateFormat;
 
 /**
@@ -20,49 +22,63 @@ import static FullHouse.Classes.checkDatum.checkDateFormat;
 public class addSpeler {
     private static boolean created = false;
     private static JPanel addSpelerPanel = new JPanel(new GridLayout(5, 5, 5, 5));
+    private static ArrayList<Boolean> checkValue = new ArrayList<>();
+    private static int telnummer = 0;
+    private static String gbdate = "";
+
+    private static JTextField naam = new JTextField();
+    private static JTextField adres = new JTextField();
+    private static JTextField woonplaats = new JTextField();
+    private static JTextField telefoonnummer = new JTextField();
+    private static JTextField email = new JTextField();
+    private static JTextField gbdatum = new JTextField();
+    private static JTextField geslacht = new JTextField();
+    private static JLabel melding = new JLabel();
+    private static JLabel melding2 = new JLabel();
+
+    private static void addComponent(Component... com) {
+        for (Component components : com) {
+            addSpelerPanel.add(components);
+        }
+    }
+
     public static void showAddSpeler(JFrame frame, JPanel panel) {
         if (!created) {
             frame.setTitle("Speler toevoegen");
             frame.remove(panel);
 
-            JButton terug = new JButton("Terug");
-            addSpelerPanel.add(terug);
-            addSpelerPanel.add(new JLabel());
-            JLabel melding = new JLabel();
-            addSpelerPanel.add(melding);
-            addSpelerPanel.add(new JLabel());
             JButton toevoegen = new JButton("Toevoegen");
-            addSpelerPanel.add(toevoegen);
-            JTextField naam = new JTextField();
-            JTextField adres = new JTextField();
-            JTextField woonplaats = new JTextField();
-            JTextField telefoonnummer = new JTextField();
-            JTextField email = new JTextField();
-            JTextField gbdatum = new JTextField();
-            JTextField geslacht = new JTextField();
+            JButton terug = new JButton("Terug");
             String[] types = new String[]{"<html>Gecontracteerde<br>speler</html>","Speler"};
             JComboBox<String> type = new JComboBox(types);
-            addSpelerPanel.add(new JLabel("Naam: "));
-            addSpelerPanel.add(naam);
-            JLabel melding2 = new JLabel();
-            addSpelerPanel.add(melding2);
-            addSpelerPanel.add(new JLabel("Adres: "));
-            addSpelerPanel.add(adres);
-            addSpelerPanel.add(new JLabel("Woonplaats: "));
-            addSpelerPanel.add(woonplaats);
-            addSpelerPanel.add(new JLabel());
-            addSpelerPanel.add(new JLabel("Telefoonnummer: "));
-            addSpelerPanel.add(telefoonnummer);
-            addSpelerPanel.add(new JLabel("E-mail: "));
-            addSpelerPanel.add(email);
-            addSpelerPanel.add(new JLabel());
-            addSpelerPanel.add(new JLabel("<html>Geboortedatum:<br>(dd-mm-jjjj)</html>"));
-            addSpelerPanel.add(gbdatum);
-            addSpelerPanel.add(new JLabel("<html>Geslacht:<br>(M/V)</html>"));
-            addSpelerPanel.add(geslacht);
-            addSpelerPanel.add(new JLabel());
-            addSpelerPanel.add(new JLabel("Type speler:"));
-            addSpelerPanel.add(type);
+
+            //add components to panel
+            addComponent(terug,
+                    new JLabel(),
+                    melding,
+                    new JLabel(),
+                    toevoegen,
+                    new JLabel("Naam: "),
+                    naam,
+                    melding2,
+                    new JLabel("Adres: "),
+                    adres,
+                    new JLabel("Woonplaats: "),
+                    woonplaats,
+                    new JLabel(),
+                    new JLabel("Telefoonnummer: "),
+                    telefoonnummer,
+                    new JLabel("E-mail: "),
+                    email,
+                    new JLabel(),
+                    new JLabel("<html>Geboortedatum:<br>(dd-mm-jjjj)</html>"),
+                    gbdatum,
+                    new JLabel("<html>Geslacht:<br>(M/V)</html>"),
+                    geslacht,
+                    new JLabel(),
+                    new JLabel("Type speler: "),
+                    type
+            );
 
             frame.add(addSpelerPanel);
             frame.pack();
@@ -71,79 +87,55 @@ public class addSpeler {
             toevoegen.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    boolean ingevuld = true;
-                    String gbdate = "";
-                    int telnummer = 0;
-                    if (naam.getText().equals("")) {
-                        naam.setBorder(BorderFactory.createLineBorder(Color.RED));
-                        ingevuld = false;
-                    } else {
-                        naam.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-                    }
-
-                    if (adres.getText().equals("")) {
-                        adres.setBorder(BorderFactory.createLineBorder(Color.RED));
-                        ingevuld = false;
-                    } else {
-                        adres.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-                    }
-
-                    if (woonplaats.getText().equals("")) {
-                        woonplaats.setBorder(BorderFactory.createLineBorder(Color.RED));
-                        ingevuld = false;
-                    } else {
-                        woonplaats.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-                    }
+                    check(naam);
+                    check(adres);
+                    check(woonplaats);
+                    check(email);
 
                     if (telefoonnummer.getText().equals("")) {
                         telefoonnummer.setBorder(BorderFactory.createLineBorder(Color.RED));
-                        ingevuld = false;
+                        checkValue.add(false);
                     } else {
                         telefoonnummer.setBorder(BorderFactory.createLineBorder(Color.GRAY));
                         if (telefoonnummer.getText().length() == 10) {
-                            telnummer = Integer.parseInt(telefoonnummer.getText());
+                            telnummer = Integer.parseInt("0"+telefoonnummer.getText());
+                            checkValue.add(true);
                         } else {
                             melding2.setText("incorrect telefoonnummer");
                             telefoonnummer.setBorder(BorderFactory.createLineBorder(Color.RED));
-                            ingevuld = false;
+                            checkValue.add(false);
                         }
-                    }
-
-                    if (email.getText().equals("")) {
-                        email.setBorder(BorderFactory.createLineBorder(Color.RED));
-                        ingevuld = false;
-                    } else {
-                        email.setBorder(BorderFactory.createLineBorder(Color.GRAY));
                     }
 
                     if (gbdatum.getText().equals("")) {
                         gbdatum.setBorder(BorderFactory.createLineBorder(Color.RED));
-                        ingevuld = false;
+                        checkValue.add(false);
                     } else {
                         gbdatum.setBorder(BorderFactory.createLineBorder(Color.GRAY));
                         String gb = gbdatum.getText();
                         gbdate = checkDateFormat(gb);
+                        checkValue.add(true);
                         if (gbdate.equals("incorrect")) {
                             melding.setText("geboortedatum incorrect");
                             gbdatum.setBorder(BorderFactory.createLineBorder(Color.RED));
-                            ingevuld = false;
+                            checkValue.add(false);
                         }
                     }
 
                     if (geslacht.getText().equals("")) {
                         geslacht.setBorder(BorderFactory.createLineBorder(Color.RED));
-                        ingevuld = false;
+                        checkValue.add(false);
                     } else {
                         if(geslacht.getText().equals("M") || geslacht.getText().equals("V")){
                             geslacht.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-                        }
-                        else{
+                            checkValue.add(true);
+                        } else{
                             geslacht.setBorder(BorderFactory.createLineBorder(Color.RED));
-                            ingevuld = false;
+                            checkValue.add(false);
                         }
                     }
 
-                    if (ingevuld) {
+                    if(!checkValue.contains(false)) {
                         int bekend;
                         if(type.getSelectedItem().equals("Speler")){
                             bekend = 0;
@@ -153,6 +145,7 @@ public class addSpeler {
                         }
 
                         melding.setText("");
+                        melding2.setText("");
                         String query = "insert into Speler(naam, adres, woonplaats, telefoonnummer, email, geboortedatum, geslacht, bekende_speler) VALUES ('" + naam.getText() + "','" + adres.getText() + "','" + woonplaats.getText() + "'," + telnummer + ",'" + email.getText() + "','" + gbdate + "','" + geslacht.getText() + "',"+bekend+")";
                         try {
                             DBConnector.executeQuery(query);
@@ -163,11 +156,15 @@ public class addSpeler {
                                 frame.remove(addSpelerPanel);
                                 Speler.showSpeler(frame, id);
                             }
+                            checkValue.clear();
                         } catch (SQLException e1) {
                             e1.printStackTrace();
                         } catch (ClassNotFoundException e1) {
                             e1.printStackTrace();
                         }
+                    }
+                    else{
+                        checkValue.clear();
                     }
                 }
             });
@@ -192,5 +189,17 @@ public class addSpeler {
             frame.pack();
             frame.setSize(800,250);
         }
+    }
+
+    public static void check(JTextField field) {
+        boolean result;
+        if (field.getText().equals("")) {
+            field.setBorder(BorderFactory.createLineBorder(Color.RED));
+            result = false;
+        } else {
+            field.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+            result = true;
+        }
+        checkValue.add(result);
     }
 }
