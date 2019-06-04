@@ -100,7 +100,7 @@ public class wijzigMasterclass {
                         melding.setText("geboortedatum incorrect");
                         datum.setBorder(BorderFactory.createLineBorder(Color.RED));
                         checkValue.add(false);
-                    }
+                    }//?
                 }
 
 
