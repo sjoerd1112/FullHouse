@@ -118,13 +118,12 @@ public class Masterclass {
         ResultSet rs = query(query);
         while (rs.next()) {
             code.setText(rs.getString("code"));
-            datum.setText(rs.getString("datum"));
             begintijd.setText(rs.getString("begintijd"));
             eindtijd.setText(rs.getString("eindtijd"));
             kosten.setText(rs.getString("kosten"));
-
-            //String datum = new SimpleDateFormat("dd-MM-yyyy").format(gbDate);
-            //datum.setText(datum);
+            Date date = rs.getDate("datum");
+            String dateformat = new SimpleDateFormat("dd-MM-yyyy").format(date);
+            datum.setText(dateformat);
             vereiste_rating.setText(rs.getString("vereiste_rating"));
             max_aantallen.setText(rs.getString("max_aantallen"));
         }
