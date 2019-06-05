@@ -20,14 +20,14 @@ import static FullHouse.Classes.checkDatum.checkDateFormat;
  */
 public class wijzigToernooi {
 
-    private static JTextField toernooi_id = addToernooi.getToernooi_id();
+    private static JComboBox<String> locatie;
     private static JTextField datum = addToernooi.getDatum();
-    private static JTextField beginTijd = addToernooi.getBeginTijd();
-    private static JTextField eindTijd = addToernooi.getEindTijd();
-    private static JTextField beschrijving = addToernooi.getBeschrijving();
-    private static JTextField condities = addToernooi.getCondities();
-    private static JTextField max_aantallen = addToernooi.getMax_aantallen();
-    private static JTextField inleggeld = addToernooi.getInleggeld();
+    private static JTextField beginTijd = new JTextField();
+    private static JTextField eindTijd = new JTextField();
+    private static JTextField beschrijving = new JTextField();
+    private static JTextField condities= new JTextField();
+    private static JTextField max_aantallen = new JTextField();
+    private static JTextField inleggeld = new JTextField();
     private static JTextField max_inschrijf_datum = addToernooi.getMax_inschrijf_datum();
 
     private static JPanel toernooiPanel;
@@ -41,14 +41,16 @@ public class wijzigToernooi {
         JButton wijzig = new JButton("Wijzigen");
         JLabel melding = new JLabel();
 
-        //add components to panel
+        String[] locaties = new String[]{"Amsterdam", "Den Haag", "Utrecht", "Eindhoven", "Arnhem"};
+        locatie = new JComboBox<>(locaties);
+
         addComponent(terug,
                 new JLabel(),
                 melding,
                 new JLabel(),
                 wijzig,
-                new JLabel("Toernooi id: "),
-                toernooi_id,
+                new JLabel("Locatie: "),
+                locatie,
                 new JLabel(),
                 new JLabel("<html>Datum:<br>(dd-mm-jjjj)</html>"),
                 datum,
@@ -70,7 +72,6 @@ public class wijzigToernooi {
                 new JLabel("<html>Max inschrijfdatum:<br>(dd-mm-jjjj hh:mm:ss)</html>"),
                 max_inschrijf_datum);
 
-        addToernooi.clear(toernooi_id);
         addToernooi.clear(datum);
         addToernooi.clear(beginTijd);
         addToernooi.clear(eindTijd);
@@ -90,7 +91,6 @@ public class wijzigToernooi {
         wijzig.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                addToernooi.check(toernooi_id);
                 addToernooi.check(datum);
                 addToernooi.check(beginTijd);
                 addToernooi.check(eindTijd);
@@ -101,12 +101,11 @@ public class wijzigToernooi {
                 addToernooi.check(max_inschrijf_datum);
 
                 if (!addToernooi.getCheckValues().contains(false)) {
-                    melding.setText("");
-                    String query = "UPDATE Toernooi SET toernooi_id='"+toernooi_id.getText()+"', datum='"+addToernooi.getFormatDatum()+"',begintijd='"+addToernooi.getBeginTime()+"',eindtijd='"+addToernooi.getEndTime()+"',beschrijving='"+beschrijving.getText()+"',condities='"+condities.getText()+"',max_aantallen='"+addToernooi.getAantallen()+"',inleggeld='"+addToernooi.getGeld()+"',max_inschrijfdatum='"+addToernooi.getMax_datum()+"' WHERE toernooi_id="+id;
+                    String query = "UPDATE Toernooi SET locatie='"+locatie.getSelectedItem()+"', datum='"+addToernooi.getFormatDatum()+"',begintijd='"+beginTijd.getText()+"',eindtijd='"+eindTijd.getText()+"',beschrijving='"+beschrijving.getText()+"',condities='"+condities.getText()+"',max_aantallen='"+max_aantallen.getText()+"',inleggeld='"+inleggeld.getText()+"',max_inschrijfdatum='"+addToernooi.getMax_datum()+"' WHERE toernooi_id="+id;
                     try {
                         DBConnector.executeQuery(query);
                         frame.remove(toernooiPanel);
-                        Toernooien.showToernooi(frame, Integer.parseInt(toernooi_id.getText()));
+                        Toernooien.showToernooi(frame, id);
                         addToernooi.removeCheckValues();
                     } catch (SQLException e1) {
                         e1.printStackTrace();
@@ -139,7 +138,7 @@ public class wijzigToernooi {
         String query = "SELECT * FROM Toernooi WHERE toernooi_id="+id;
         ResultSet rs = DBConnector.query(query);
         while (rs.next()) {
-            toernooi_id.setText(rs.getString("toernooi_id"));
+            locatie.setSelectedItem(rs.getString("locatie"));
             Date date = rs.getDate("datum");
             String inschrijf_datum = new SimpleDateFormat("dd-MM-yyyy").format(date);
             datum.setText(inschrijf_datum);

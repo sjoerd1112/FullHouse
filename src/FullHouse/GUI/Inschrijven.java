@@ -19,6 +19,8 @@ public class Inschrijven {
     private static JTextField idInput = new JTextField();
     private static JLabel melding = new JLabel();
 
+    private static int toernooi_spelers = 0;
+
     public static void showInschrijven(JFrame frame, JPanel panel, int id) throws SQLException {
         if(!created) {
             frame.remove(panel);
@@ -141,6 +143,7 @@ public class Inschrijven {
                     query = "INSERT INTO toernooi_inschrijving(speler, toernooi) VALUES (" + id + ", " + toernooiId + ")";
                     DBConnector.executeQuery(query);
                     idInput.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+                    toernooi_spelers++;
                 }
             }
         }else{

@@ -13,12 +13,17 @@ import javax.swing.*;
 public class Spelers {
     private static int rows = 0;
     private static int aantal = 7;
-    private static boolean created = false;
     private static JScrollPane scroll = new JScrollPane();
     private static JTextField zoeken = new JTextField();
 
+    public static void clearSearchBar() {
+        if (!zoeken.getText().isEmpty()) {
+            zoeken.setText("");
+        }
+    }
+
     public static void showSpelers(JFrame frame, JPanel panel, String query) throws SQLException {
-        if (!created) {
+            panel.removeAll();
             frame.remove(panel);
             frame.setTitle("Spelers Overzicht");
 
@@ -93,7 +98,6 @@ public class Spelers {
                         int i = (int) naamButton.getClientProperty("id");
                         try {
                             frame.remove(scroll);
-                            created = false;
                             aantal = 7;
                             Speler.showSpeler(frame, i);
                         } catch (SQLException e1) {
@@ -109,7 +113,6 @@ public class Spelers {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     frame.getContentPane().remove(scroll);
-                    created = false;
                     aantal = 7;
                     addSpeler.showAddSpeler(frame, panel);
                 }
@@ -125,10 +128,9 @@ public class Spelers {
             terug.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    frame.remove(scroll);
-                    created = false;
+                    frame.dispose();
                     aantal = 7;
-                    Home.showHome(frame);
+                    Home.showHome();
                 }
             });
 
@@ -141,14 +143,6 @@ public class Spelers {
             frame.getContentPane().add(scroll);
             frame.pack();
             frame.setSize(800, 250);
-
-        } else {
-            frame.remove(panel);
-            frame.getContentPane().add(scroll);
-            frame.pack();
-            frame.setSize(800, 250);
-        }
-        created = true;
     }
 
     public static int getRows() {
@@ -159,7 +153,6 @@ public class Spelers {
         String zoekNaam = zoeken.getText();
         try {
             String query = "SELECT naam, id FROM Speler WHERE naam LIKE'%" + zoekNaam + "%'";
-            created = false;
             frame.getContentPane().remove(scroll);
             aantal = 7;
             showSpelers(frame, panel, query);

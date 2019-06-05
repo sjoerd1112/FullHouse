@@ -165,7 +165,6 @@ public class Speler{
                 type.setText("Speler");
             }
         }
-
     }
 }
 

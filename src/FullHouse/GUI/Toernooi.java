@@ -6,19 +6,40 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import javax.swing.*;
 
 public class Toernooi {
 
     private static int rows = 0;
     private static int aantal = 7;
-    private static boolean created = false;
 
     private static JScrollPane scroll = new JScrollPane();
     private static JTextField zoeken = new JTextField();
 
+    private static JCheckBox box1;
+    private static JCheckBox box2;
+
+    private static JPanel ingeschreven_Panel;
+
+    private static ArrayList<JPanel> panels = new ArrayList<>();
+    private static ArrayList<checkBox> list = new ArrayList<>();
+
+    private static JPanel spelersPanel= new ToernooiScrollablePanel();
+
+
+    public static void clearSearchBar() {
+        if (!zoeken.getText().isEmpty()) {
+            zoeken.setText("");
+        }
+    }
+
     public static void showToernooien(JFrame frame, JPanel panel, String query) throws SQLException {
-        if(!created) {
+
+            panel.removeAll();
+            frame.remove(panel);
+            frame.setTitle("Toernooien overzicht");
+
             JPanel toernooiPanel= new ToernooiScrollablePanel();
 
             JButton terug = new JButton("Terug");
@@ -28,9 +49,6 @@ public class Toernooi {
             JLabel zoekenLabel = new JLabel("Zoek toernooi: ");
             JLabel leeg = new JLabel();
             JLabel empty = new JLabel();
-
-            frame.remove(panel);
-            frame.setTitle("Toernooien overzicht");
 
             toernooiPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
             terug.setPreferredSize(new Dimension(100,25));
@@ -94,7 +112,6 @@ public class Toernooi {
                         int i = (int) naamButton.getClientProperty("id");
                         try {
                             frame.remove(scroll);
-                            created = false;
                             aantal = 7;
                             Toernooien.showToernooi(frame, i);
                         } catch (SQLException e1) {
@@ -110,7 +127,6 @@ public class Toernooi {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     frame.getContentPane().remove(scroll);
-                    created = false;
                     aantal = 7;
                     addToernooi.showAddToernooi(frame, panel);
                 }
@@ -126,10 +142,9 @@ public class Toernooi {
             terug.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    frame.remove(scroll);
-                    created = false;
+                    frame.dispose();
                     aantal = 7;
-                    Home.showHome(frame);
+                    Home.showHome();
                 }
             });
 
@@ -142,16 +157,6 @@ public class Toernooi {
             frame.getContentPane().add(scroll);
             frame.pack();
             frame.setSize(800,250);
-
-        }
-        else{
-            frame.setTitle("Toernooien overzicht");
-            frame.remove(panel);
-            frame.getContentPane().add(scroll);
-            frame.pack();
-            frame.setSize(800,250);
-        }
-        created = true;
     }
 
     public static int getRows(){
@@ -162,12 +167,230 @@ public class Toernooi {
         String zoekNaam = zoeken.getText();
         try {
             String query = "SELECT toernooi_id FROM Toernooi WHERE toernooi_id LIKE'%" + zoekNaam + "%'";
-            created = false;
             frame.getContentPane().remove(scroll);
             aantal = 7;
             showToernooien(frame, panel, query);
         } catch (SQLException e1) {
             e1.printStackTrace();
+        }
+    }
+
+    public static void zoekIngeschrevenSpeler(JFrame frame, JPanel panel, int id) {
+        String zoekNaam = zoeken.getText();
+        try {
+            String query = "SELECT * FROM Speler s INNER JOIN toernooi_inschrijving TI on s.id = TI.speler WHERE TI.toernooi = " + id + " AND s.id IN (SELECT speler FROM toernooi_inschrijving) AND naam LIKE '%" + zoekNaam + "%'";
+            frame.getContentPane().remove(scroll);
+            aantal = 7;
+            showIngeschrevenSpelers(frame, panel, id, query);
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    public static void showIngeschrevenSpelers(JFrame frame, JPanel panel, int toernooiId, String query) throws SQLException {
+            spelersPanel.removeAll();
+            panel.removeAll();
+            frame.remove(panel);
+
+            frame.setTitle("Ingeschreven spelers");
+
+            JButton terug = new JButton("Terug");
+            JButton zoek = new JButton("Zoeken");
+
+            JLabel zoekenLabel = new JLabel("Zoek spelers: ");
+            JLabel leeg = new JLabel();
+            JLabel empty = new JLabel();
+
+            spelersPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+            terug.setPreferredSize(new Dimension(100,25));
+            spelersPanel.add(terug);
+
+            leeg.setPreferredSize(new Dimension(100,25));
+            spelersPanel.add(leeg);
+
+            zoekenLabel.setPreferredSize(new Dimension(100,25));
+            spelersPanel.add(zoekenLabel);
+
+            zoeken.setPreferredSize(new Dimension(100,25));
+            zoeken.addKeyListener(new KeyListener() {
+
+                @Override
+                public void keyTyped(KeyEvent e) {
+                }
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if(e.getKeyCode()==KeyEvent.VK_ENTER) {
+                        zoekIngeschrevenSpeler(frame, panel, toernooiId);
+                    }
+                }
+                @Override
+                public void keyReleased(KeyEvent e) {
+                }
+            });
+
+            spelersPanel.add(zoeken);
+
+            zoek.setPreferredSize(new Dimension(100,25));
+            spelersPanel.add(zoek);
+
+            empty.setPreferredSize(new Dimension(100,25));
+            spelersPanel.add(empty);
+
+            JButton checkButton = new JButton("Check");
+            checkButton.setPreferredSize(new Dimension(100, 25));
+            spelersPanel.add(checkButton);
+
+            ResultSet rs;
+
+            rs = DBConnector.query(query);
+            list.clear();
+            panels.clear();
+            while(rs.next()){
+                ingeschreven(rs, toernooiId);
+            }
+            setcheckBox();
+
+            checkButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    check(ingeschreven_Panel);
+                }
+            });
+
+            zoek.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    zoekIngeschrevenSpeler(frame, panel, toernooiId);
+                }
+            });
+
+            terug.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    frame.remove(scroll);
+                    aantal = 7;
+                    try {
+                        Toernooien.showToernooi(frame, toernooiId);
+                    } catch (SQLException  | ClassNotFoundException e2) {
+                        e2.printStackTrace();
+                    }
+                }
+            });
+
+
+        rows = Math.round(aantal / 7) + 1;
+
+        scroll.setViewportView(spelersPanel);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        frame.getContentPane().add(scroll);
+        frame.pack();
+        frame.setSize(800,250);
+
+    }
+
+    static class checkBox {
+        private String speler;
+        private JCheckBox box;
+
+        private String tekst;
+
+        public checkBox(String speler, JCheckBox box, String tekst) {
+            this.speler = speler;
+            this.box = box;
+            this.tekst = tekst;
+        }
+
+        public String getTekst() {
+            return tekst;
+        }
+
+        public String getSpeler() {
+            return speler;
+        }
+
+        public JCheckBox getBox() {
+            return box;
+        }
+    }
+
+    public static void addListeners(JPanel panel, JCheckBox b, String speler, String tekst, int id) {
+        checkBox check = new checkBox(speler, b, tekst);
+        list.add(check);
+                b.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String query;
+                        if (!b.isSelected()) {
+                            b.setSelected(false);
+                            query = "UPDATE toernooi_inschrijving INNER JOIN Speler s on speler = s.id SET " + b.getText() + " = 'N' WHERE toernooi = " + id + " AND s.naam = '" + speler + "'";
+                        } else {
+                            b.setSelected(true);
+                            query = "UPDATE toernooi_inschrijving INNER JOIN Speler s on speler = s.id SET " + b.getText() + " = 'J' WHERE toernooi = " + id + " AND s.naam = '" + speler + "'";
+                        }
+                        try {
+                            DBConnector.executeQuery(query);
+                        } catch (SQLException | ClassNotFoundException e2) {
+                            e2.printStackTrace();
+                        }
+                    }
+                });
+                panel.add(b);
+    }
+
+    public static void setcheckBox() {
+        for (checkBox check : list) {
+            if (check.getTekst().equals("J")) {
+                check.getBox().setSelected(true);
+            } else {
+                check.getBox().setSelected(false);
+            }
+        }
+        check(ingeschreven_Panel);
+    }
+
+    public static void ingeschreven(ResultSet rs, int toernooiId) {
+
+        box1 = new JCheckBox("betaald");
+        box2 = new JCheckBox("aanwezig");
+
+        Font myFont = new Font("Serif", Font.ITALIC, 14);
+        box1.setFont(myFont);
+        box2.setFont(myFont);
+
+        ingeschreven_Panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        try {
+            String speler = rs.getString("naam");
+            String betaald = rs.getString("betaald");
+            String aanwezig = rs.getString("aanwezig");
+
+            ingeschreven_Panel.add(new JLabel(speler));
+
+            addListeners(ingeschreven_Panel, box1, speler, betaald, toernooiId);
+            addListeners(ingeschreven_Panel, box2, speler, aanwezig, toernooiId);
+            if (panels.isEmpty() || panels.size() < list.size()) {
+                for (int j = panels.size(); j < list.size(); j++) {
+                    panels.add(ingeschreven_Panel);
+                }
+            }
+            spelersPanel.add(ingeschreven_Panel);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void check(JPanel secondPanel) {
+        for(int i = 0; i < panels.size(); i+=2){
+            if(list.get(i).getBox().isSelected() && list.get(i+1).getBox().isSelected()){
+                    panels.get(i).setBorder(BorderFactory.createLineBorder(Color.GREEN));
+            } else{
+                    panels.get(i).setBorder(BorderFactory.createLineBorder(Color.RED));
+            }
+        }
+        for (JPanel panel : panels) {
+            spelersPanel.add(panel);
         }
     }
 }

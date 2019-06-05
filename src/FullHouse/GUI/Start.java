@@ -1,6 +1,8 @@
 package FullHouse.GUI;
 
 import FullHouse.DB.DBConnector;
+
+import javax.swing.*;
 import java.sql.SQLException;
 
 /**

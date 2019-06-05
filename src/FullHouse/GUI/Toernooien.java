@@ -6,7 +6,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -18,8 +21,8 @@ import static FullHouse.DB.DBConnector.query;
  */
 public class Toernooien{
 
-    private static boolean created = false;
     private static JPanel toernooiPanel = new JPanel(new GridLayout(6, 5, 5, 5));
+
     private static JLabel toernooi_id = new JLabel();
     private static JLabel datum = new JLabel();
     private static JLabel beginTijd = new JLabel();
@@ -29,16 +32,18 @@ public class Toernooien{
     private static JLabel max_aantallen = new JLabel();
     private static JLabel inleggeld = new JLabel();
     private static JLabel max_inschrijf_datum = new JLabel();
+    private static JLabel locatie = new JLabel();
 
     public static void showToernooi(JFrame frame, int id) throws SQLException, ClassNotFoundException {
-        if(!created) {
+            toernooiPanel.removeAll();
             frame.setTitle("Toernooien overzicht");
             JButton terug = new JButton("Terug");
             JButton wijzigen = new JButton("Wijzigen");
             JButton verwijderen = new JButton("Verwijderen");
+            JButton spelers = new JButton("Spelers");
 
             addComponent(terug,
-                    new JLabel(),
+                    spelers,
                     new JLabel(),
                     wijzigen,
                     verwijderen,
@@ -63,7 +68,10 @@ public class Toernooien{
                     new JLabel("Inleggeld:"),
                     inleggeld,
                     new JLabel("Max inschrijfdatum: "),
-                    max_inschrijf_datum);
+                    max_inschrijf_datum,
+                    new JLabel(),
+                    new JLabel("Locatie: "),
+                    locatie);
 
             String query = "SELECT * FROM Toernooi WHERE toernooi_id=" + id;
             setText(query);
@@ -80,6 +88,19 @@ public class Toernooien{
                         Toernooi.showToernooien(frame, toernooiPanel, query);
                     } catch (SQLException e1) {
                         e1.printStackTrace();
+                    }
+                }
+            });
+
+            spelers.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        String query = "SELECT * FROM Speler s INNER JOIN toernooi_inschrijving TI on s.id = TI.speler WHERE TI.toernooi = " + id + " AND s.id IN (SELECT speler FROM toernooi_inschrijving)";
+                        Toernooi.clearSearchBar();
+                        Toernooi.showIngeschrevenSpelers(frame, toernooiPanel, id, query);
+                    } catch (SQLException e2) {
+                        e2.printStackTrace();
                     }
                 }
             });
@@ -109,14 +130,6 @@ public class Toernooien{
                     }
                 }
             });
-        }
-        else{
-            frame.setTitle("Toernooien overzicht");
-            toernooiPanel.removeAll();
-            created = false;
-            showToernooi(frame, id);
-        }
-        created = true;
     }
 
     public static void verwijderToernooi(int id, JFrame frame) throws SQLException, ClassNotFoundException {
@@ -146,6 +159,7 @@ public class Toernooien{
             String convertDate = new SimpleDateFormat("dd-MM-yyyy").format(max_date);
             String convertTime = new SimpleDateFormat("HH:mm:ss").format(time);
             max_inschrijf_datum.setText(convertDate + " " + convertTime);
+            locatie.setText(rs.getString("locatie"));
         }
     }
 

@@ -15,13 +15,17 @@ import java.sql.*;
 import static FullHouse.DB.DBConnector.query;
 
 public class Login {
-    private static JFrame frame = new JFrame("FullHouse");
+
+    private static JFrame frame;
     private static JPanel loginPanel;
+
     private static JTextField userTextfield = new JTextField();
     private static JPasswordField passwordTextfield = new JPasswordField();
     private static JLabel melding = new JLabel();
 
     public static void showLogin() throws SQLException, ClassNotFoundException {
+
+        frame = new JFrame("FullHouse");
         loginPanel = new JPanel(new GridLayout(6, 5));
         loginPanel.add(new JLabel("Login"));
         addLabel(5);
@@ -35,6 +39,8 @@ public class Login {
         addLabel(5);
         addLabel(10);
         JButton confirmButton = new JButton("Ok");
+        userTextfield.setText("");
+        passwordTextfield.setText("");
         userTextfield.addKeyListener(new checkButton());
         passwordTextfield.addKeyListener(new checkButton());
         loginPanel.add(confirmButton);
@@ -53,14 +59,6 @@ public class Login {
             }
         });
     }
-    public static void showLogin(JFrame frame, JPanel panel){
-        frame.remove(panel);
-        frame.add(loginPanel);
-        userTextfield.setText("");
-        passwordTextfield.setText("");
-        frame.pack();
-        frame.setSize(800,250);
-    }
 
     private static class checkButton extends KeyAdapter{
 
@@ -76,7 +74,8 @@ public class Login {
         String username = userTextfield.getText();
         String password = passwordTextfield.getText();
         if(checkLogin(username, password)){
-            Home.showHome(frame, loginPanel);
+            frame.dispose();
+            Home.showHome();
         }
     }
 

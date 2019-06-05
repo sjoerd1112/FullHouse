@@ -10,12 +10,17 @@ import java.sql.SQLException;
  * Created by sjoer on 13-5-2019.
  */
 public class Home {
-    private static JPanel homePanel = new JPanel(new GridLayout(3,4,25,10));
-    private static boolean created = false;
-    public static void showHome(JFrame frame, JPanel panel){
-        if(!created) {
-            frame.remove(panel);
-            frame.setTitle("Home");
+    private static JPanel homePanel;
+    private static JFrame frame;
+
+    public static void showHome(){
+            if (frame != null) {
+                frame.dispose();
+            }
+
+            homePanel = new JPanel(new GridLayout(3,4,25,10));
+            frame = new JFrame("Home");
+
             JButton spelers = new JButton("Spelers");
             JButton toernooien = new JButton("Toernooien");
             JButton masterclasses = new JButton("Masterclasses");
@@ -31,14 +36,19 @@ public class Home {
             homePanel.add(medewerkers);
             addLabel(4);
             frame.add(homePanel);
+
             frame.pack();
+            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             frame.setSize(800, 250);
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
 
             spelers.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
                         String query = "SELECT naam, id FROM Speler";
+                        Spelers.clearSearchBar();
                         Spelers.showSpelers(frame, homePanel, query);
                     } catch (SQLException e1) {
                         e1.printStackTrace();
@@ -51,6 +61,7 @@ public class Home {
                 public void actionPerformed(ActionEvent e) {
                     try {
                         String query = "SELECT toernooi_id FROM Toernooi";
+                        Toernooi.clearSearchBar();
                         Toernooi.showToernooien(frame, homePanel, query);
                     } catch (SQLException e1) {
                         e1.printStackTrace();
@@ -75,6 +86,7 @@ public class Home {
             toevoegen.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    addGebruiker.clearFields();
                     addGebruiker.showToevoegen(frame, homePanel);
                 }
             });
@@ -82,26 +94,14 @@ public class Home {
             uitloggen.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Login.showLogin(frame, homePanel);
+                    try {
+                        frame.dispose();
+                        Login.showLogin();
+                    } catch (SQLException | ClassNotFoundException e2) {
+                        e2.printStackTrace();
+                    }
                 }
             });
-
-            created = true;
-        }
-        else{
-            frame.setTitle("Home");
-            frame.remove(panel);
-            frame.add(homePanel);
-            frame.pack();
-            frame.setSize(800,250);
-        }
-    }
-
-    public static void showHome(JFrame frame){
-        frame.setTitle("Home");
-        frame.add(homePanel);
-        frame.pack();
-        frame.setSize(800,250);
     }
 
     public static void addLabel(int aantal){

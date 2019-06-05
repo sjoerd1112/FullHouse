@@ -17,13 +17,20 @@ import static FullHouse.DB.DBConnector.updateQuery;
 public class addGebruiker {
     private static JPanel gebruikerPanel = new JPanel(new GridLayout(6,5));
     private static JLabel melding = new JLabel();
-    private static boolean created = false;
     private static JTextField userTextfield = new JTextField();
     private static JPasswordField passwordTextfield = new JPasswordField();
 
+    public static void clearFields() {
+    if (!userTextfield.getText().isEmpty() || !passwordTextfield.getText().isEmpty()) {
+            userTextfield.setText("");
+            passwordTextfield.setText("");
+        }
+    }
+
     public static void showToevoegen(JFrame frame, JPanel panel) {
-        if(!created) {
+            gebruikerPanel.removeAll();
             frame.remove(panel);
+
             frame.setTitle("Gebruiker Toevoegen");
             gebruikerPanel.add(new JLabel("Toevoegen"));
             addLabel(3);
@@ -65,20 +72,10 @@ public class addGebruiker {
             terug.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    frame.remove(gebruikerPanel);
-                    Home.showHome(frame, gebruikerPanel);
+                    frame.dispose();
+                    Home.showHome();
                 }
             });
-
-            created = true;
-        }
-        else{
-            frame.setTitle("Gebruiker Toevoegen");
-            frame.remove(panel);
-            frame.add(gebruikerPanel);
-            frame.pack();
-            frame.setSize(800,250);
-        }
     }
 
     public static void addLabel(int aantal){
