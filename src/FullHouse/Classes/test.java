@@ -45,9 +45,11 @@ public class test {
     }
 
     private static void Check(){
+        int aantal = 0;
         for(int i = 0;i<list.size();i+=2){
             if(list.get(i).isSelected()==true&&list.get(i+1).isSelected()==true){
                 System.out.println("Speler "+list.get(i).getClientProperty("naam")+" doet mee");
+                aantal++;
             }
             else{
                 System.out.println("Speler "+list.get(i).getClientProperty("naam")+" doet niet mee");
