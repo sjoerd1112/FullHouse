@@ -21,7 +21,7 @@ import static FullHouse.DB.DBConnector.query;
  */
 public class Toernooien{
 
-    private static JPanel toernooiPanel = new JPanel(new GridLayout(6, 5, 5, 5));
+    private static JPanel toernooiPanel = new JPanel(new GridLayout(7, 5, 5, 5));
 
     private static JLabel toernooi_id = new JLabel();
     private static JLabel datum = new JLabel();
@@ -33,6 +33,7 @@ public class Toernooien{
     private static JLabel inleggeld = new JLabel();
     private static JLabel max_inschrijf_datum = new JLabel();
     private static JLabel locatie = new JLabel();
+    private static JLabel type = new JLabel();
 
     public static void showToernooi(JFrame frame, int id) throws SQLException, ClassNotFoundException {
             toernooiPanel.removeAll();
@@ -71,7 +72,9 @@ public class Toernooien{
                     max_inschrijf_datum,
                     new JLabel(),
                     new JLabel("Locatie: "),
-                    locatie);
+                    locatie,
+                    new JLabel("Type: "),
+                    type);
 
             String query = "SELECT * FROM Toernooi WHERE toernooi_id=" + id;
             setText(query);
@@ -112,8 +115,6 @@ public class Toernooien{
                         wijzigToernooi.showWijzigToernooi(frame, toernooiPanel, id);
                     } catch (SQLException e1) {
                         e1.printStackTrace();
-                    } catch (ClassNotFoundException e1) {
-                        e1.printStackTrace();
                     }
                 }
             });
@@ -123,9 +124,7 @@ public class Toernooien{
                 public void actionPerformed(ActionEvent e) {
                     try {
                         verwijderToernooi(id, frame);
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    } catch (ClassNotFoundException e1) {
+                    } catch (SQLException | ClassNotFoundException e1) {
                         e1.printStackTrace();
                     }
                 }
@@ -160,6 +159,7 @@ public class Toernooien{
             String convertTime = new SimpleDateFormat("HH:mm:ss").format(time);
             max_inschrijf_datum.setText(convertDate + " " + convertTime);
             locatie.setText(rs.getString("locatie"));
+            type.setText(rs.getString("type"));
         }
     }
 

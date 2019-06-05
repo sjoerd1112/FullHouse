@@ -18,6 +18,8 @@ public class addToernooi{
     private static JPanel addToernooiPanel = new JPanel(new GridLayout(6, 5, 5, 5));
 
     private static JComboBox<String> locatie;
+    private static JComboBox<String> type;
+
     private static JTextField datum = new JTextField();
     private static JTextField beginTijd = new JTextField();
     private static JTextField eindTijd = new JTextField();
@@ -39,15 +41,18 @@ public class addToernooi{
 
     public static void showAddToernooi(JFrame frame, JPanel panel) {
 
-            frame.setTitle("Toernooi toevoegen");
-            frame.remove(panel);
             addToernooiPanel.removeAll();
+            frame.remove(panel);
+            frame.setTitle("Toernooi toevoegen");
 
             JButton terug = new JButton("Terug");
             JButton toevoegen = new JButton("Toevoegen");
 
             String[] locaties = new String[]{"Amsterdam", "Den Haag", "Utrecht", "Eindhoven", "Arnhem"};
             locatie = new JComboBox<>(locaties);
+
+            String[] types = new String[]{"Regulier", "Pink Ribbon", "Speciaal"};
+            type = new JComboBox<>(types);
 
             addComponent(terug,
                          new JLabel(),
@@ -75,7 +80,10 @@ public class addToernooi{
                          new JLabel("Inleggeld:"),
                          inleggeld,
                          new JLabel("<html>Max inschrijfdatum:<br>(dd-mm-jjjj hh:mm:ss)</html>"),
-                         max_inschrijf_datum);
+                         max_inschrijf_datum,
+                         new JLabel(),
+                         new JLabel("Type: "),
+                         type);
 
             clear(datum);
             clear(beginTijd);
@@ -93,6 +101,7 @@ public class addToernooi{
             toevoegen.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+
                     check(datum);
                     check(beginTijd);
                     check(eindTijd);
@@ -103,7 +112,7 @@ public class addToernooi{
                     check(max_inschrijf_datum);
 
                     if (!checkValue.contains(false)) {
-                        String query = "insert into Toernooi(locatie, datum, begintijd, eindtijd, beschrijving, condities, max_aantallen, inleggeld, max_inschrijfdatum) VALUES ('"+ locatie.getSelectedItem() + "', '" + formatDatum + "','" + beginTime + "','" + endTime + "','" + beschrijving.getText() + "','" + condities.getText() + "','" + aantallen + "','"+inleg+"','"+max_datum+"')";
+                        String query = "insert into Toernooi(locatie, datum, begintijd, eindtijd, beschrijving, condities, max_aantallen, inleggeld, max_inschrijfdatum, type) VALUES ('"+ locatie.getSelectedItem() + "', '" + formatDatum + "','" + beginTime + "','" + endTime + "','" + beschrijving.getText() + "','" + condities.getText() + "','" + aantallen + "','"+inleg+"','"+max_datum+"','" + type.getSelectedItem() + "')";
                         try {
                             DBConnector.executeQuery(query);
                             query = "SELECT toernooi_id FROM Toernooi WHERE toernooi_id = (SELECT max(toernooi_id) FROM Toernooi)";
@@ -114,9 +123,7 @@ public class addToernooi{
                                 Toernooien.showToernooi(frame, id);
                             }
                             checkValue.clear();
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        } catch (ClassNotFoundException e1) {
+                        } catch (SQLException | ClassNotFoundException e1) {
                             e1.printStackTrace();
                         }
                     } else {

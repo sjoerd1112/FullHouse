@@ -21,6 +21,8 @@ import static FullHouse.Classes.checkDatum.checkDateFormat;
 public class wijzigToernooi {
 
     private static JComboBox<String> locatie;
+    private static JComboBox<String> type;
+
     private static JTextField datum = addToernooi.getDatum();
     private static JTextField beginTijd = new JTextField();
     private static JTextField eindTijd = new JTextField();
@@ -32,7 +34,7 @@ public class wijzigToernooi {
 
     private static JPanel toernooiPanel;
 
-    public static void showWijzigToernooi(JFrame frame, JPanel panel, int id) throws SQLException, ClassNotFoundException {
+    public static void showWijzigToernooi(JFrame frame, JPanel panel, int id) throws SQLException {
         frame.remove(panel);
         frame.setTitle("Toernooi wijzigen");
 
@@ -43,6 +45,9 @@ public class wijzigToernooi {
 
         String[] locaties = new String[]{"Amsterdam", "Den Haag", "Utrecht", "Eindhoven", "Arnhem"};
         locatie = new JComboBox<>(locaties);
+
+        String[] types = new String[]{"Regulier", "Pink Ribbon", "Speciaal"};
+        type = new JComboBox<>(types);
 
         addComponent(terug,
                 new JLabel(),
@@ -59,7 +64,7 @@ public class wijzigToernooi {
                 new JLabel(),
                 new JLabel("<html>Eindtijd:<br>(hh:mm:ss)</html>"),
                 eindTijd,
-                new JLabel("Beschrijving: "),
+                new JLabel("Beschrijving:"),
                 beschrijving,
                 new JLabel(),
                 new JLabel("Condities:"),
@@ -70,7 +75,10 @@ public class wijzigToernooi {
                 new JLabel("Inleggeld:"),
                 inleggeld,
                 new JLabel("<html>Max inschrijfdatum:<br>(dd-mm-jjjj hh:mm:ss)</html>"),
-                max_inschrijf_datum);
+                max_inschrijf_datum,
+                new JLabel(),
+                new JLabel("Type:"),
+                type);
 
         addToernooi.clear(datum);
         addToernooi.clear(beginTijd);
@@ -82,6 +90,7 @@ public class wijzigToernooi {
         addToernooi.clear(max_inschrijf_datum);
 
         setText(id);
+
         frame.add(toernooiPanel);
         frame.pack();
         frame.setSize(800, 250);
@@ -91,6 +100,7 @@ public class wijzigToernooi {
         wijzig.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 addToernooi.check(datum);
                 addToernooi.check(beginTijd);
                 addToernooi.check(eindTijd);
@@ -101,15 +111,13 @@ public class wijzigToernooi {
                 addToernooi.check(max_inschrijf_datum);
 
                 if (!addToernooi.getCheckValues().contains(false)) {
-                    String query = "UPDATE Toernooi SET locatie='"+locatie.getSelectedItem()+"', datum='"+addToernooi.getFormatDatum()+"',begintijd='"+beginTijd.getText()+"',eindtijd='"+eindTijd.getText()+"',beschrijving='"+beschrijving.getText()+"',condities='"+condities.getText()+"',max_aantallen='"+max_aantallen.getText()+"',inleggeld='"+inleggeld.getText()+"',max_inschrijfdatum='"+addToernooi.getMax_datum()+"' WHERE toernooi_id="+id;
+                    String query = "UPDATE Toernooi SET locatie='"+locatie.getSelectedItem()+"', datum='"+addToernooi.getFormatDatum()+"',begintijd='"+beginTijd.getText()+"',eindtijd='"+eindTijd.getText()+"',beschrijving='"+beschrijving.getText()+"',condities='"+condities.getText()+"',max_aantallen='"+max_aantallen.getText()+"',inleggeld='"+inleggeld.getText()+"',max_inschrijfdatum='"+addToernooi.getMax_datum()+"',type='"+type.getSelectedItem()+"' WHERE toernooi_id="+id;
                     try {
                         DBConnector.executeQuery(query);
                         frame.remove(toernooiPanel);
                         Toernooien.showToernooi(frame, id);
                         addToernooi.removeCheckValues();
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    } catch (ClassNotFoundException e1) {
+                    } catch (SQLException | ClassNotFoundException e1) {
                         e1.printStackTrace();
                     }
                 } else {
@@ -125,9 +133,7 @@ public class wijzigToernooi {
                 frame.remove(toernooiPanel);
                 try {
                     Toernooien.showToernooi(frame, id);
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (ClassNotFoundException e1) {
+                } catch (SQLException | ClassNotFoundException e1) {
                     e1.printStackTrace();
                 }
             }
@@ -153,6 +159,7 @@ public class wijzigToernooi {
             String convertDate = new SimpleDateFormat("dd-MM-yyyy").format(max_date);
             String convertTime = new SimpleDateFormat("HH:mm:ss").format(time);
             max_inschrijf_datum.setText(convertDate + " " + convertTime);
+            type.setSelectedItem(rs.getString("type"));
         }
     }
 

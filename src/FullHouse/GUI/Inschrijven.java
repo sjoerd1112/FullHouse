@@ -18,8 +18,6 @@ public class Inschrijven {
     private static JTextField idInput = new JTextField();
     private static JLabel melding = new JLabel();
 
-    private static int toernooi_spelers = 0;
-
     public static void showInschrijven(JFrame frame, JPanel panel, int id) throws SQLException {
         frame.remove(panel);
         frame.setTitle("Inschrijven/uitschrijven");
@@ -195,7 +193,6 @@ public class Inschrijven {
                     String query = "DELETE FROM toernooi_inschrijving WHERE speler=" + id;
                     DBConnector.executeQuery(query);
                     idInput.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-                    toernooi_spelers++;
                 }
                 else{
                     melding.setText("<html>Speler is niet<br>ingeschreven</html>");

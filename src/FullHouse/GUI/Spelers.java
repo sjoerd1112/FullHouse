@@ -11,16 +11,12 @@ import java.sql.SQLException;
 import javax.swing.*;
 
 public class Spelers {
+
     private static int rows = 0;
     private static int aantal = 7;
+
     private static JScrollPane scroll = new JScrollPane();
     private static JTextField zoeken = new JTextField();
-
-    public static void clearSearchBar() {
-        if (!zoeken.getText().isEmpty()) {
-            zoeken.setText("");
-        }
-    }
 
     public static void showSpelers(JFrame frame, JPanel panel, String query) throws SQLException {
             panel.removeAll();
@@ -100,9 +96,7 @@ public class Spelers {
                             frame.remove(scroll);
                             aantal = 7;
                             Speler.showSpeler(frame, i);
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        } catch (ClassNotFoundException e1) {
+                        } catch (SQLException | ClassNotFoundException e1) {
                             e1.printStackTrace();
                         }
                     }
@@ -125,13 +119,10 @@ public class Spelers {
                 }
             });
 
-            terug.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
+            terug.addActionListener(e -> {
                     frame.dispose();
                     aantal = 7;
                     Home.showHome();
-                }
             });
 
             rows = Math.round(aantal / 7) + 1;
@@ -152,12 +143,18 @@ public class Spelers {
     public static void zoekSpeler(JFrame frame, JPanel panel) {
         String zoekNaam = zoeken.getText();
         try {
-            String query = "SELECT naam, id FROM Speler WHERE naam LIKE'%" + zoekNaam + "%'";
+            String query = "SELECT naam, id FROM Speler WHERE naam LIKE'" + zoekNaam + "%'";
             frame.getContentPane().remove(scroll);
             aantal = 7;
             showSpelers(frame, panel, query);
         } catch (SQLException e1) {
             e1.printStackTrace();
+        }
+    }
+
+    public static void clearSearchBar() {
+        if (!zoeken.getText().isEmpty()) {
+            zoeken.setText("");
         }
     }
 

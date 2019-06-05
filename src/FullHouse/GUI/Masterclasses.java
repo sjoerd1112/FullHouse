@@ -123,7 +123,7 @@ public class Masterclasses {
                     frame.remove(scroll);
                     created = false;
                     aantal = 7;
-                    Home.showHome(frame);
+                    Home.showHome();
                 }
             });
 

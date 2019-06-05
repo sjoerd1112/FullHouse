@@ -17,8 +17,9 @@ import static FullHouse.DB.DBConnector.query;
  * Created by sjoer on 20-5-2019.
  */
 public class Speler{
-    private static boolean created = false;
+
     private static JPanel spelerPanel = new JPanel(new GridLayout(5, 5, 5, 5));
+
     private static JLabel naam = new JLabel();
     private static JLabel adres = new JLabel();
     private static JLabel woonplaats = new JLabel();
@@ -30,37 +31,39 @@ public class Speler{
     private static JLabel type = new JLabel();
 
     public static void showSpeler(JFrame frame, int id) throws SQLException, ClassNotFoundException {
-        if(!created) {
+            spelerPanel.removeAll();
             frame.setTitle("Speler");
+
             JButton terug = new JButton("Terug");
-            spelerPanel.add(terug);
-            JButton inschrijven = new JButton("<html>Inschrijven<br>Uitschrijven</html>");
-            spelerPanel.add(inschrijven);
-            spelerPanel.add(type);
             JButton wijzigen = new JButton("Wijzigen");
             JButton verwijderen = new JButton("Verwijderen");
-            spelerPanel.add(wijzigen);
-            spelerPanel.add(verwijderen);
-            spelerPanel.add(new JLabel("Naam: "));
-            spelerPanel.add(naam);
-            spelerPanel.add(new JLabel());
-            spelerPanel.add(new JLabel("Adres: "));
-            spelerPanel.add(adres);
-            spelerPanel.add(new JLabel("Woonplaats: "));
-            spelerPanel.add(woonplaats);
-            spelerPanel.add(new JLabel());
-            spelerPanel.add(new JLabel("Telefoonnummer: "));
-            spelerPanel.add(telefoonnummer);
-            spelerPanel.add(new JLabel("E-mail: "));
-            spelerPanel.add(email);
-            spelerPanel.add(new JLabel());
-            spelerPanel.add(new JLabel("Geboortedatum: "));
-            spelerPanel.add(gbdatum);
-            spelerPanel.add(new JLabel("Geslacht: "));
-            spelerPanel.add(geslacht);
-            spelerPanel.add(new JLabel());
-            spelerPanel.add(new JLabel("Rating: "));
-            spelerPanel.add(rating);
+            JButton inschrijven = new JButton("<html>Inschrijven<br>Uitschrijven</html>");
+
+            addComponent(terug,
+                         inschrijven,
+                         type,
+                         wijzigen,
+                         verwijderen,
+                         new JLabel("Naam: "),
+                         naam,
+                         new JLabel(),
+                         new JLabel("Adres: "),
+                         adres,
+                         new JLabel("Woonplaats: "),
+                         woonplaats,
+                         new JLabel(),
+                         new JLabel("Telefoonnummer: "),
+                         telefoonnummer,
+                         new JLabel("E-mail: "),
+                         email,
+                         new JLabel(),
+                         new JLabel("Geboortedatum: "),
+                         gbdatum,
+                         new JLabel("Geslacht: "),
+                         geslacht,
+                         new JLabel(),
+                         new JLabel("Rating: "),
+                         rating);
 
             String query = "SELECT * FROM Speler WHERE id=" + id;
             setText(query);
@@ -88,8 +91,6 @@ public class Speler{
                         wijzigSpeler.showWijzigSpeler(frame, spelerPanel, id);
                     } catch (SQLException e1) {
                         e1.printStackTrace();
-                    } catch (ClassNotFoundException e1) {
-                        e1.printStackTrace();
                     }
                 }
             });
@@ -99,9 +100,7 @@ public class Speler{
                 public void actionPerformed(ActionEvent e) {
                     try {
                         verwijderSpeler(id, frame);
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    } catch (ClassNotFoundException e1) {
+                    } catch (SQLException | ClassNotFoundException e1) {
                         e1.printStackTrace();
                     }
                 }
@@ -117,14 +116,12 @@ public class Speler{
                     }
                 }
             });
+    }
+
+    private static void addComponent(Component... com) {
+        for (Component components : com) {
+            spelerPanel.add(components);
         }
-        else{
-            frame.setTitle("Speler");
-            spelerPanel.removeAll();
-            created = false;
-            showSpeler(frame, id);
-        }
-        created = true;
     }
 
     public static void verwijderSpeler(int id, JFrame frame) throws SQLException, ClassNotFoundException {
@@ -134,10 +131,6 @@ public class Speler{
             query = "SELECT naam, id FROM Speler";
             Spelers.showSpelers(frame, spelerPanel, query);
         }
-        else{
-
-        }
-
     }
 
     public static void setText(String query) throws SQLException {

@@ -27,7 +27,6 @@ public class Toernooi {
 
     private static JPanel spelersPanel= new ToernooiScrollablePanel();
 
-
     public static void clearSearchBar() {
         if (!zoeken.getText().isEmpty()) {
             zoeken.setText("");
@@ -178,7 +177,7 @@ public class Toernooi {
     public static void zoekIngeschrevenSpeler(JFrame frame, JPanel panel, int id) {
         String zoekNaam = zoeken.getText();
         try {
-            String query = "SELECT * FROM Speler s INNER JOIN toernooi_inschrijving TI on s.id = TI.speler WHERE TI.toernooi = " + id + " AND s.id IN (SELECT speler FROM toernooi_inschrijving) AND naam LIKE '%" + zoekNaam + "%'";
+            String query = "SELECT * FROM Speler s INNER JOIN toernooi_inschrijving TI on s.id = TI.speler WHERE TI.toernooi = " + id + " AND s.id IN (SELECT speler FROM toernooi_inschrijving) AND naam LIKE '" + zoekNaam + "%'";
             frame.getContentPane().remove(scroll);
             aantal = 7;
             showIngeschrevenSpelers(frame, panel, id, query);
@@ -254,7 +253,7 @@ public class Toernooi {
             checkButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    check(ingeschreven_Panel);
+                    check();
                 }
             });
 
@@ -291,31 +290,6 @@ public class Toernooi {
 
     }
 
-    static class checkBox {
-        private String speler;
-        private JCheckBox box;
-
-        private String tekst;
-
-        public checkBox(String speler, JCheckBox box, String tekst) {
-            this.speler = speler;
-            this.box = box;
-            this.tekst = tekst;
-        }
-
-        public String getTekst() {
-            return tekst;
-        }
-
-        public String getSpeler() {
-            return speler;
-        }
-
-        public JCheckBox getBox() {
-            return box;
-        }
-    }
-
     public static void addListeners(JPanel panel, JCheckBox b, String speler, String tekst, int id) {
         checkBox check = new checkBox(speler, b, tekst);
         list.add(check);
@@ -348,7 +322,7 @@ public class Toernooi {
                 check.getBox().setSelected(false);
             }
         }
-        check(ingeschreven_Panel);
+        check();
     }
 
     public static void ingeschreven(ResultSet rs, int toernooiId) {
@@ -370,18 +344,20 @@ public class Toernooi {
 
             addListeners(ingeschreven_Panel, box1, speler, betaald, toernooiId);
             addListeners(ingeschreven_Panel, box2, speler, aanwezig, toernooiId);
+
             if (panels.isEmpty() || panels.size() < list.size()) {
                 for (int j = panels.size(); j < list.size(); j++) {
                     panels.add(ingeschreven_Panel);
                 }
             }
             spelersPanel.add(ingeschreven_Panel);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public static void check(JPanel secondPanel) {
+    public static void check() {
         for(int i = 0; i < panels.size(); i+=2){
             if(list.get(i).getBox().isSelected() && list.get(i+1).getBox().isSelected()){
                     panels.get(i).setBorder(BorderFactory.createLineBorder(Color.GREEN));
@@ -394,6 +370,32 @@ public class Toernooi {
         }
     }
 }
+
+class checkBox {
+    private String speler;
+    private JCheckBox box;
+
+    private String tekst;
+
+    public checkBox(String speler, JCheckBox box, String tekst) {
+        this.speler = speler;
+        this.box = box;
+        this.tekst = tekst;
+    }
+
+    public String getTekst() {
+        return tekst;
+    }
+
+    public String getSpeler() {
+        return speler;
+    }
+
+    public JCheckBox getBox() {
+        return box;
+    }
+}
+
 
 class ToernooiScrollablePanel extends JPanel implements Scrollable {
     public Dimension getPreferredSize() {

@@ -21,38 +21,30 @@ public class wijzigSpeler {
     private static JTextField naam = new JTextField();
     private static JTextField adres = new JTextField();
     private static JTextField woonplaats = new JTextField();
-    private static JTextField telefoonnummer = new JTextField();
+    private static JTextField telefoonnummer = addSpeler.getTelefoonnummer();
     private static JTextField email = new JTextField();
-    private static JTextField gbdatum = new JTextField();
-    private static JTextField geslacht = new JTextField();
+    private static JTextField gbdatum = addSpeler.getGbdatum();
+    private static JTextField geslacht = addSpeler.getGeslacht();
     private static JTextField rating = new JTextField();
     private static JComboBox<String> type;
-    private static ArrayList<Boolean> checkValue = new ArrayList<>();
 
-    private static int telnummer = 0;
-    private static String gbdate = "";
     private static JLabel melding = new JLabel();
     private static JLabel melding2 = new JLabel();
 
-    private static JPanel spelerPanel;
+    private static JPanel spelerPanel = new JPanel(new GridLayout(5,5,5,5));
 
-    private static void addComponent(Component... com) {
-        for (Component components : com) {
-            spelerPanel.add(components);
-        }
-    }
+    public static void showWijzigSpeler(JFrame frame, JPanel panel, int id) throws SQLException {
 
-    public static void showWijzigSpeler(JFrame frame, JPanel panel, int id) throws SQLException, ClassNotFoundException {
+        spelerPanel.removeAll();
         frame.remove(panel);
         frame.setTitle("Speler wijzigen");
 
-        spelerPanel = new JPanel(new GridLayout(5,5,5,5));
-        String[] types = new String[]{"<html>Gecontracteerde<br>speler</html>","Speler"};
-        type = new JComboBox(types);
+        String[] types = new String[]{"<html>Gecontracteerd</html>","Normale speler"};
+        type = new JComboBox<>(types);
+
         JButton terug = new JButton("Terug");
         JButton wijzig = new JButton("Wijzigen");
 
-        //add components to panel
         addComponent(terug,
                 new JLabel(),
                 melding,
@@ -79,6 +71,14 @@ public class wijzigSpeler {
                 new JLabel("Type speler:"),
                 type);
 
+        addSpeler.clearText(naam);
+        addSpeler.clearText(adres);
+        addSpeler.clearText(woonplaats);
+        addSpeler.clearText(email);
+        addSpeler.clearText(telefoonnummer);
+        addSpeler.clearText(gbdatum);
+        addSpeler.clearText(geslacht);
+
         setText(id);
 
         frame.add(spelerPanel);
@@ -88,78 +88,36 @@ public class wijzigSpeler {
         wijzig.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                check(naam);
-                check(adres);
-                check(woonplaats);
-                check(email);
 
-                if (telefoonnummer.getText().equals("")) {
-                    telefoonnummer.setBorder(BorderFactory.createLineBorder(Color.RED));
-                    checkValue.add(false);
-                } else {
-                    telefoonnummer.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-                    if (telefoonnummer.getText().length() == 10) {
-                        telnummer = Integer.parseInt("0"+telefoonnummer.getText());
-                        checkValue.add(true);
-                    } else {
-                        melding2.setText("incorrect telefoonnummer");
-                        telefoonnummer.setBorder(BorderFactory.createLineBorder(Color.RED));
-                        checkValue.add(false);
-                    }
-                }
+                addSpeler.check(naam);
+                addSpeler.check(adres);
+                addSpeler.check(woonplaats);
+                addSpeler.check(email);
+                addSpeler.check(telefoonnummer);
+                addSpeler.check(gbdatum);
+                addSpeler.check(geslacht);
 
-                if (gbdatum.getText().equals("")) {
-                    gbdatum.setBorder(BorderFactory.createLineBorder(Color.RED));
-                    checkValue.add(false);
-                } else {
-                    gbdatum.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-                    String gb = gbdatum.getText();
-                    gbdate = checkDateFormat(gb);
-                    checkValue.add(true);
-                    if (gbdate.equals("incorrect")) {
-                        melding.setText("geboortedatum incorrect");
-                        gbdatum.setBorder(BorderFactory.createLineBorder(Color.RED));
-                        checkValue.add(false);
-                    }
-                }
-
-                if (geslacht.getText().equals("")) {
-                    geslacht.setBorder(BorderFactory.createLineBorder(Color.RED));
-                    checkValue.add(false);
-                } else {
-                    if(geslacht.getText().equals("M") || geslacht.getText().equals("V")){
-                        geslacht.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-                        checkValue.add(true);
-                    } else{
-                        geslacht.setBorder(BorderFactory.createLineBorder(Color.RED));
-                        checkValue.add(false);
-                    }
-                }
-
-                if (!checkValue.contains(false)) {
+                if (!addSpeler.getCheckValue().contains(false)) {
                     int bekend;
-                    if(type.getSelectedItem().equals("Speler")){
+                    if(type.getSelectedItem().equals("Normale speler")){
                         bekend = 0;
                     }
                     else{
                         bekend = 1;
                     }
-
-                    melding.setText("");
-                    melding2.setText("");
-                    String query = "UPDATE Speler SET naam='"+naam.getText()+"', adres='"+adres.getText()+"',woonplaats='"+woonplaats.getText()+"',telefoonnummer="+telnummer+",email='"+email.getText()+"',geboortedatum='"+gbdate+"',geslacht='"+geslacht.getText()+"',rating="+rating.getText()+", bekende_speler="+bekend+" WHERE id="+id;
+                    System.out.println("Datum: "+addSpeler.getGbdate());
+                    String query = "UPDATE Speler SET naam='"+naam.getText()+"', adres='"+adres.getText()+"',woonplaats='"+woonplaats.getText()+"',telefoonnummer="+addSpeler.getTelnummer()+",email='"+email.getText()+"',geboortedatum='"+addSpeler.getGbdate()+"',geslacht='"+geslacht.getText()+"',rating="+rating.getText()+", bekende_speler="+bekend+" WHERE id="+id;
                     try {
                         DBConnector.executeQuery(query);
-                        checkValue.clear();
+                        addSpeler.getCheckValue().clear();
                         frame.remove(spelerPanel);
                         Speler.showSpeler(frame, id);
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    } catch (ClassNotFoundException e1) {
+                    } catch (SQLException | ClassNotFoundException e1) {
                         e1.printStackTrace();
                     }
                 } else {
-                    checkValue.clear();
+                    JOptionPane.showMessageDialog(frame, "Vul alle velden correct in a.u.b.", "Er is iets misgegaan!", JOptionPane.ERROR_MESSAGE);
+                    addSpeler.getCheckValue().clear();
                 }
             }
         });
@@ -170,25 +128,11 @@ public class wijzigSpeler {
                 frame.remove(spelerPanel);
                 try {
                     Speler.showSpeler(frame, id);
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                } catch (ClassNotFoundException e1) {
+                } catch (SQLException | ClassNotFoundException e1) {
                     e1.printStackTrace();
                 }
             }
         });
-    }
-
-    public static void check(JTextField field) {
-        boolean result;
-        if (field.getText().equals("")) {
-            field.setBorder(BorderFactory.createLineBorder(Color.RED));
-            result = false;
-        } else {
-            field.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-            result = true;
-        }
-        checkValue.add(result);
     }
 
     public static void setText(int id) throws SQLException {
@@ -206,11 +150,17 @@ public class wijzigSpeler {
             geslacht.setText(rs.getString("geslacht"));
             rating.setText(rs.getString("rating"));
             if(rs.getInt("bekende_speler")==1){
-                type.setSelectedItem("<html>Gecontracteerde<br>speler</html>");
+                type.setSelectedItem("<html>Gecontracteerd</html>");
             }
             else{
-                type.setSelectedItem("Speler");
+                type.setSelectedItem("Normale speler");
             }
+        }
+    }
+
+    private static void addComponent(Component... com) {
+        for (Component components : com) {
+            spelerPanel.add(components);
         }
     }
 }
