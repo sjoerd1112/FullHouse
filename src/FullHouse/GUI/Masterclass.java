@@ -127,6 +127,5 @@ public class Masterclass {
             vereiste_rating.setText(rs.getString("vereiste_rating"));
             max_aantallen.setText(rs.getString("max_aantallen"));
         }
-
     }
 }
