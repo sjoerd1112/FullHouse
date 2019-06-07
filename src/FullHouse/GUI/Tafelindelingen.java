@@ -40,7 +40,7 @@ public class Tafelindelingen {
         }
         if(!bestaatAl) {
             if(ronde == 1) {
-                String query1 = "SELECT rating,id FROM Speler JOIN toernooi_inschrijving ON id = toernooi_inschrijving.speler WHERE betaald LIKE 'J' AND aanwezig LIKE 'J' AND  toernooi ="+toernooi_id;
+                String query1 = "SELECT rating,id FROM Speler JOIN toernooi_inschrijving ON id = toernooi_inschrijving.speler WHERE betaald LIKE 'J' AND aanwezig LIKE 'J' AND toernooi ="+toernooi_id;
                 ResultSet rs = DBConnector.query(query1);
                 while (rs.next()) {
                     int rating = rs.getInt("rating");
@@ -48,7 +48,6 @@ public class Tafelindelingen {
                     String id = rs.getString("id");
                     String nieuwquery = "UPDATE Speler SET rating = "+rating+" WHERE id = "+id;
                     DBConnector.updateQuery(nieuwquery);
-                    System.out.println(id);
                 }
                 query = "SELECT count(id) as aantal FROM Speler JOIN toernooi_inschrijving ON id = toernooi_inschrijving.speler WHERE betaald LIKE 'J' AND aanwezig LIKE 'J' AND  toernooi=" + toernooi_id;
             } else{
@@ -92,15 +91,19 @@ public class Tafelindelingen {
         terug.setPreferredSize(new Dimension(100, 25));
         tafelindelingPanel.add(terug);
 
-        for (int i = 0; i < 4; i++) {
+        JButton volgende = new JButton("Volgende");
+        volgende.setPreferredSize(new Dimension(100,25));
+        tafelindelingPanel.add(volgende);
+
+        JLabel melding = new JLabel();
+        melding.setPreferredSize(new Dimension(100,25));
+        tafelindelingPanel.add(melding);
+
+        for (int i = 0; i < 3; i++) {
             JLabel leeg = new JLabel();
             leeg.setPreferredSize(new Dimension(100, 25));
             tafelindelingPanel.add(leeg);
         }
-
-        JButton volgende = new JButton("Volgende");
-        volgende.setPreferredSize(new Dimension(100,25));
-        tafelindelingPanel.add(volgende);
 
         for (int i = 0; i < aantaltafels; i++) {
             DefaultListModel list = new DefaultListModel();
@@ -149,10 +152,50 @@ public class Tafelindelingen {
         frame.getContentPane().add(scroll);
         frame.pack();
         frame.setSize(800, 250);
-    }
 
-    public static void winnaarVeld(ArrayList<JTextField> input){
+        terug.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.remove(scroll);
+                try {
+                    Toernooien.showToernooi(frame, toernooi_id);
+                } catch (SQLException  | ClassNotFoundException e2) {
+                    e2.printStackTrace();
+                }
+            }
+        });
 
+        volgende.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int nieuweRonde = ronde + 1;
+                boolean ingevuld = true;
+                for(int i = 0;i<fields.size();i++){
+                    String idString = fields.get(i).getText();
+                    if(!(idString.matches("[0-9]+"))){
+                        ingevuld = false;
+                        melding.setText("<html>Niet alles is<br>correct ingevuld</html>");
+                        fields.get(i).setBorder(BorderFactory.createLineBorder(Color.RED));
+                    } else{
+                        
+                        melding.setText("");
+                        fields.get(i).setBorder(BorderFactory.createLineBorder(Color.GRAY));
+                    }
+                }
+                if(ingevuld) {
+                    try {
+                        frame.remove(scroll);
+                        showTafelindeling(frame, panel, toernooi_id, nieuweRonde);
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    } catch (ClassNotFoundException e1) {
+                        e1.printStackTrace();
+                    }
+                } else{
+
+                }
+            }
+        });
     }
 
     public static int getRows(){
