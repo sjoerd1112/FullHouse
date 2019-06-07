@@ -160,14 +160,11 @@ public class wijzigMasterclass {
         ResultSet rs = DBConnector.query(query);
         while(rs.next()){
             code.setText(rs.getString("code"));
-            Date gbDate = rs.getDate("datum");
-            String date = new SimpleDateFormat("dd-MM-yyyy").format(gbDate);
-            datum.setText(date);
+            String data = new SimpleDateFormat("dd-MM-yyyy").format(rs.getDate("datum"));
+            datum.setText(data);
             begintijd.setText(rs.getString("begintijd"));
             eindtijd.setText(rs.getString("eindtijd"));
             kosten.setText(rs.getString("kosten"));
-            //String data = new SimpleDateFormat("dd-MM-yyyy").format(datum);
-            //datum.setText(data);
             vereiste_rating.setText(rs.getString("vereiste_rating"));
             max_aantallen.setText(rs.getString("max_aantallen"));
             locatie.setSelectedItem(rs.getString("locatie"));
