@@ -40,6 +40,16 @@ public class Tafelindelingen {
         }
         if(!bestaatAl) {
             if(ronde == 1) {
+                String query1 = "SELECT rating,id FROM Speler JOIN toernooi_inschrijving ON id = toernooi_inschrijving.speler WHERE betaald LIKE 'J' AND aanwezig LIKE 'J' AND  toernooi ="+toernooi_id;
+                ResultSet rs = DBConnector.query(query1);
+                while (rs.next()) {
+                    int rating = rs.getInt("rating");
+                    rating+= 10;
+                    String id = rs.getString("id");
+                    String nieuwquery = "UPDATE Speler SET rating = "+rating+" WHERE id = "+id;
+                    DBConnector.updateQuery(nieuwquery);
+                    System.out.println(id);
+                }
                 query = "SELECT count(id) as aantal FROM Speler JOIN toernooi_inschrijving ON id = toernooi_inschrijving.speler WHERE betaald LIKE 'J' AND aanwezig LIKE 'J' AND  toernooi=" + toernooi_id;
             } else{
                 query = "SELECT COUNT(speler) as aantal FROM Tafelindeling WHERE resultaat='W' AND toernooi="+toernooi_id+" AND ronde="+(ronde-1);

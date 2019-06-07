@@ -37,7 +37,7 @@ public class Toernooi {
 
             panel.removeAll();
             frame.remove(panel);
-            frame.setTitle("Toernooi");
+            frame.setTitle("Toernooien overzicht");
 
             JPanel toernooiPanel= new ToernooiScrollablePanel();
 
@@ -256,7 +256,7 @@ public class Toernooi {
                 public void actionPerformed(ActionEvent e) {
                     frame.remove(scroll);
                     try {
-                        Tafelindelingen.showTafelindeling(frame, panel, toernooiId, 2);
+                        Tafelindelingen.showTafelindeling(frame, panel, toernooiId, 1);
                     } catch (SQLException  | ClassNotFoundException e2) {
                         e2.printStackTrace();
                     }
