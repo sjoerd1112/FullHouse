@@ -134,7 +134,7 @@ public class Tafelindeling {
             for(int x = 0;x<tafel.getAantal();x++){
                 Speler speler = tafel.getSpelers().get(x);
                 int id = speler.getId();
-                String query = "INSERT INTO Tafelindeling(tafelNummer, spelers, resultaat, ronde, winnaar) VALUES ("+i+", "+id+", null, "+ronde+", NULL )";
+                String query = "INSERT INTO Tafelindeling(tafelNummer, speler, resultaat, ronde) VALUES ("+i+", "+id+", null, "+ronde+")";
                 DBConnector.executeQuery(query);
             }
         }

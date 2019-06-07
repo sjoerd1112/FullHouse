@@ -254,12 +254,12 @@ public class Toernooi {
             tafelindeling.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    /*frame.remove(scroll);
+                    frame.remove(scroll);
                     try {
                         Tafelindelingen.showTafelindeling(frame, panel, toernooiId);
                     } catch (SQLException  | ClassNotFoundException e2) {
                         e2.printStackTrace();
-                    }*/
+                    }
                 }
             });
 
