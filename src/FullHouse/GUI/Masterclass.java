@@ -26,7 +26,7 @@ public class Masterclass {
 
     public static void showMasterclass(JFrame frame, int id) throws SQLException, ClassNotFoundException {
         if(!created) {
-            frame.setTitle("Speler");
+            frame.setTitle("Masterclass");
             JButton terug = new JButton("Terug");
             masterclassPanel.add(terug);
             masterclassPanel.add(code);

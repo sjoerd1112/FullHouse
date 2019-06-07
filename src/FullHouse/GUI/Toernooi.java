@@ -256,7 +256,7 @@ public class Toernooi {
                 public void actionPerformed(ActionEvent e) {
                     frame.remove(scroll);
                     try {
-                        Tafelindelingen.showTafelindeling(frame, panel, toernooiId, 1);
+                        Tafelindelingen.showTafelindeling(frame, panel, toernooiId, 2);
                     } catch (SQLException  | ClassNotFoundException e2) {
                         e2.printStackTrace();
                     }

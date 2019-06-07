@@ -21,7 +21,7 @@ public class Tafelindeling {
 
     public static ArrayList<Tafel> createTafels(int aantalSpelers, String type, int toernooi_id, int ronde_nummer) throws SQLException, ClassNotFoundException {
         int aantalTafels;
-        if(type.equals("Normaal")) {
+        if(type.equals("Regulier")) {
             if(aantalSpelers<9){
                 aantalTafels = 1;
                 tafels.add(new Tafel(aantalSpelers));
@@ -103,8 +103,14 @@ public class Tafelindeling {
                     id = rand.nextInt(aantalSpelers)+1;
                 }
                 IDs.add(id);
-                String query = "SELECT id FROM Speler JOIN toernooi_inschrijving ON Speler.id = toernooi_inschrijving.speler WHERE toernooi=" + toernooi_id;
-                ResultSet rs = DBConnector.query(query);
+                ResultSet rs;
+                if(ronde==1) {
+                    String query = "SELECT id FROM Speler JOIN toernooi_inschrijving ON Speler.id = toernooi_inschrijving.speler JOIN Tafelindeling ON Tafelindeling.speler=toernooi_inschrijving.speler WHERE toernooi_inschrijving.toernooi=" + toernooi_id + " AND Tafelindeling.ronde=1";
+                    rs = DBConnector.query(query);
+                } else{
+                    String query = "SELECT speler as id FROM Tafelindeling WHERE resultaat='W' AND toernooi="+toernooi_id+" AND ronde="+(ronde-1);
+                    rs = DBConnector.query(query);
+                }
                 if (rs.absolute(id)) {
                     Speler speler = new Speler(rs.getInt("id"));
                     tafel.addSpeler(speler);
