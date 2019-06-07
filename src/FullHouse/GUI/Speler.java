@@ -159,5 +159,9 @@ public class Speler{
             }
         }
     }
+
+    public static String getNaam() {
+        return naam.getText();
+    }
 }
 

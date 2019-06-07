@@ -37,7 +37,7 @@ public class Toernooi {
 
             panel.removeAll();
             frame.remove(panel);
-            frame.setTitle("Toernooien overzicht");
+            frame.setTitle("Toernooi");
 
             JPanel toernooiPanel= new ToernooiScrollablePanel();
 
@@ -195,6 +195,7 @@ public class Toernooi {
 
             JButton terug = new JButton("Terug");
             JButton zoek = new JButton("Zoeken");
+            JButton tafelindeling = new JButton("Tafelindelingen");
 
             JLabel zoekenLabel = new JLabel("Zoek spelers: ");
             JLabel leeg = new JLabel();
@@ -234,7 +235,7 @@ public class Toernooi {
             spelersPanel.add(zoek);
 
             empty.setPreferredSize(new Dimension(100,25));
-            spelersPanel.add(empty);
+            spelersPanel.add(tafelindeling);
 
             JButton checkButton = new JButton("Check");
             checkButton.setPreferredSize(new Dimension(100, 25));
@@ -249,6 +250,18 @@ public class Toernooi {
                 ingeschreven(rs, toernooiId);
             }
             setcheckBox();
+
+            tafelindeling.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    frame.remove(scroll);
+                    try {
+                        Tafelindelingen.showTafelindeling(frame, panel, toernooiId);
+                    } catch (SQLException  | ClassNotFoundException e2) {
+                        e2.printStackTrace();
+                    }
+                }
+            });
 
             checkButton.addActionListener(new ActionListener() {
                 @Override
