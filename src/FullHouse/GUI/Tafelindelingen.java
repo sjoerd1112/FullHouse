@@ -39,7 +39,6 @@ public class Tafelindelingen {
             }
         }
         if(!bestaatAl) {
-            System.out.println("In bestaat al");
             if(ronde == 1) {
                 String query1 = "SELECT rating,id FROM Speler JOIN toernooi_inschrijving ON id = toernooi_inschrijving.speler WHERE betaald LIKE 'J' AND aanwezig LIKE 'J' AND toernooi ="+toernooi_id;
                 ResultSet rs = DBConnector.query(query1);
@@ -92,7 +91,7 @@ public class Tafelindelingen {
         tafelindelingPanel.add(terug);
 
         JButton volgende = new JButton("Volgende");
-        volgende.setPreferredSize(new Dimension(100,25));
+        volgende.setPreferredSize(new Dimension(100, 25));
         tafelindelingPanel.add(volgende);
 
         JLabel melding = new JLabel();
@@ -252,7 +251,6 @@ public class Tafelindelingen {
                         int nieuweRonde = ronde + 1;
                         fields.clear();
                         frame.remove(scroll);
-                        scroll.removeAll();
                         tafelindelingPanel.removeAll();
                         showTafelindeling(frame, panel, toernooi_id, nieuweRonde);
                     } catch (SQLException e1) {
