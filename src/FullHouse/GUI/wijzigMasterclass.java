@@ -29,6 +29,7 @@ public class wijzigMasterclass {
     private static JLabel melding2;
     private static ArrayList<Boolean> checkValue = new ArrayList<>();
     private static String gbdate = "";
+    private static JComboBox<String> locatie;
 
 
     private static JPanel masterclassPanel;
@@ -49,6 +50,9 @@ public class wijzigMasterclass {
         melding2 = new JLabel();
         JButton wijzig = new JButton("Wijzigen");
 
+        String[] locaties = new String[]{"Amsterdam", "Den Haag", "Utrecht", "Eindhoven", "Arnhem"};
+        locatie = new JComboBox<>(locaties);
+
         //add components to panel
         addComponent(terug,
                 melding,
@@ -67,7 +71,9 @@ public class wijzigMasterclass {
                 new JLabel("Minimum rating:"),
                 vereiste_rating,
                 new JLabel("Maximaal aantal:"),
-                max_aantallen);
+                max_aantallen,
+                new JLabel("Locatie:"),
+                locatie);
 
         setText(id);
 
@@ -106,7 +112,7 @@ public class wijzigMasterclass {
 
                 if (!checkValue.contains(false)) {
                     melding.setText("");
-                    String query = "UPDATE masterClass SET code="+code.getText()+", datum='"+gbdate+"',begintijd='"+begintijd.getText()+"',eindtijd='"+eindtijd.getText()+"',kosten="+kosten.getText()+",vereiste_rating="+vereiste_rating.getText()+",max_aantallen="+max_aantallen.getText()+" WHERE code="+id;
+                    String query = "UPDATE masterClass SET code="+code.getText()+", datum='"+gbdate+"',begintijd='"+begintijd.getText()+"',eindtijd='"+eindtijd.getText()+"',kosten="+kosten.getText()+",vereiste_rating="+vereiste_rating.getText()+",max_aantallen="+max_aantallen.getText()+",locatie='"+locatie.getSelectedItem()+"' WHERE code="+id;
                     try {
                         DBConnector.executeQuery(query);
                         melding.setText("Masterclass "+code.getText()+" gewijzigd");
@@ -154,7 +160,9 @@ public class wijzigMasterclass {
         ResultSet rs = DBConnector.query(query);
         while(rs.next()){
             code.setText(rs.getString("code"));
-            datum.setText(rs.getString("datum"));
+            Date gbDate = rs.getDate("datum");
+            String date = new SimpleDateFormat("dd-MM-yyyy").format(gbDate);
+            datum.setText(date);
             begintijd.setText(rs.getString("begintijd"));
             eindtijd.setText(rs.getString("eindtijd"));
             kosten.setText(rs.getString("kosten"));
@@ -162,6 +170,7 @@ public class wijzigMasterclass {
             //datum.setText(data);
             vereiste_rating.setText(rs.getString("vereiste_rating"));
             max_aantallen.setText(rs.getString("max_aantallen"));
+            locatie.setSelectedItem(rs.getString("locatie"));
         }
     }
 }

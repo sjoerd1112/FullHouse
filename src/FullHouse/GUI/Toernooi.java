@@ -6,7 +6,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.*;
 
 public class Toernooi {
@@ -88,7 +90,11 @@ public class Toernooi {
 
             ResultSet rs = DBConnector.query(query);
             while(rs.next()){
-                String naam = rs.getString("toernooi_id");
+                String naam = "<html>";
+                naam+= rs.getString("toernooi_id");
+                naam+="<br>";
+                naam+= new SimpleDateFormat("dd-MM-yyyy").format(rs.getDate("datum"));
+                naam+="</html>";
                 if(naam.length()>10 && naam.contains(" ")){
                     for(int i = 0;i<naam.length();i++){
                         if(naam.charAt(i) == ' '){

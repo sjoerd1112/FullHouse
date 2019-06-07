@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -23,29 +25,42 @@ public class Masterclass {
     private static JLabel kosten = new JLabel();
     private static JLabel vereiste_rating = new JLabel();
     private static JLabel max_aantallen = new JLabel();
+    private static JLabel locatie = new JLabel();
 
     public static void showMasterclass(JFrame frame, int id) throws SQLException, ClassNotFoundException {
         if(!created) {
-            frame.setTitle("Speler");
+            frame.setTitle("Masterclass overzicht");
+
             JButton terug = new JButton("Terug");
-            masterclassPanel.add(terug);
-            masterclassPanel.add(code);
+            JButton spelers = new JButton("Spelers");
             JButton wijzigen = new JButton("Wijzigen");
             JButton verwijderen = new JButton("Verwijderen");
+
+            masterclassPanel.add(terug);
+            masterclassPanel.add(spelers);
+            masterclassPanel.add(new JLabel());
             masterclassPanel.add(wijzigen);
             masterclassPanel.add(verwijderen);
+            masterclassPanel.add(new JLabel("Code: "));
+            masterclassPanel.add(code);
+            masterclassPanel.add(new JLabel());
             masterclassPanel.add(new JLabel("Datum: "));
             masterclassPanel.add(datum);
             masterclassPanel.add(new JLabel("Begintijd: "));
             masterclassPanel.add(begintijd);
+            masterclassPanel.add(new JLabel());
             masterclassPanel.add(new JLabel("Eindtijd: "));
             masterclassPanel.add(eindtijd);
             masterclassPanel.add(new JLabel("Kosten: "));
             masterclassPanel.add(kosten);
+            masterclassPanel.add(new JLabel());
             masterclassPanel.add(new JLabel("Minimale rating: "));
             masterclassPanel.add(vereiste_rating);
             masterclassPanel.add(new JLabel("Maximaal aantal spelers: "));
             masterclassPanel.add(max_aantallen);
+            masterclassPanel.add(new JLabel());
+            masterclassPanel.add(new JLabel("Locatie: "));
+            masterclassPanel.add(locatie);
 
             String query = "SELECT * FROM masterClass WHERE code =" + id;
             setText(query);
@@ -60,6 +75,19 @@ public class Masterclass {
                     try {
                         String query = "SELECT code, datum FROM masterClass";
                         Masterclasses.showMasterclasses(frame, masterclassPanel, query);
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
+
+            spelers.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        String query = "SELECT * FROM Speler s INNER JOIN mC_inschrijving mC on s.id = mC.speler WHERE mC.masterClass = " + id + " AND s.id IN (SELECT speler FROM mC_inschrijving)";
+                        Masterclasses.clearSearchBar();
+                        Masterclasses.showIngeschrevenSpelers(frame, masterclassPanel, id, query);
                     } catch (SQLException e1) {
                         e1.printStackTrace();
                     }
@@ -126,6 +154,7 @@ public class Masterclass {
             datum.setText(dateformat);
             vereiste_rating.setText(rs.getString("vereiste_rating"));
             max_aantallen.setText(rs.getString("max_aantallen"));
+            locatie.setText(rs.getString("locatie"));
         }
     }
 }
