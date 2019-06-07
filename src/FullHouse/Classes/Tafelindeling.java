@@ -107,7 +107,6 @@ public class Tafelindeling {
                     String query = "SELECT speler as id FROM Tafelindeling WHERE resultaat='W' AND toernooi="+toernooi_id+" AND ronde="+(ronde-1);
                     rs = DBConnector.query(query);
                 }
-                System.out.println("hier");
                 if (rs.absolute(id)) {
                     Speler speler = new Speler(rs.getInt("id"));
                     tafel.addSpeler(speler);

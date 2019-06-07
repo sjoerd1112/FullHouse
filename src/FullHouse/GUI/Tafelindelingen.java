@@ -157,6 +157,7 @@ public class Tafelindelingen {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.remove(scroll);
+                fields.clear();
                 try {
                     Toernooien.showToernooi(frame, toernooi_id);
                 } catch (SQLException  | ClassNotFoundException e2) {
@@ -168,7 +169,6 @@ public class Tafelindelingen {
         volgende.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int nieuweRonde = ronde + 1;
                 boolean ingevuld = true;
                 for(int i = 0;i<fields.size();i++){
                     String idString = fields.get(i).getText();
@@ -177,14 +177,82 @@ public class Tafelindelingen {
                         melding.setText("<html>Niet alles is<br>correct ingevuld</html>");
                         fields.get(i).setBorder(BorderFactory.createLineBorder(Color.RED));
                     } else{
-                        
-                        melding.setText("");
-                        fields.get(i).setBorder(BorderFactory.createLineBorder(Color.GRAY));
+                        String query = "SELECT speler FROM Tafelindeling WHERE toernooi="+toernooi_id+" AND ronde="+ronde;
+                        boolean bestaat = false;
+                        try {
+                            ResultSet rs = DBConnector.query(query);
+                            while(rs.next()){
+                                if(rs.getInt("speler")==Integer.parseInt(fields.get(i).getText())){
+                                    bestaat = true;
+                                }
+                            }
+                        } catch (SQLException e1) {
+                            e1.printStackTrace();
+                        }
+                        if(bestaat) {
+                            query = "SELECT rating FROM Speler JOIN Tafelindeling ON Speler.id=Tafelindeling.speler WHERE Tafelindeling.toernooi="+toernooi_id+" AND Tafelindeling.tafelNummer="+i;
+                            int rating = 0;
+                            int aantal = 0;
+                            try {
+                                ResultSet rs = DBConnector.query(query);
+                                while(rs.next()){
+                                    rating += rs.getInt("rating");
+                                    aantal++;
+                                }
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                            int gem_rating = rating/aantal;
+
+                            query = "SELECT rating, temp_rating FROM Speler WHERE id="+idString;
+                            int winnaar_rating = 0;
+                            int temp_rating = 0;
+                            try {
+                                ResultSet rs = DBConnector.query(query);
+                                if(rs.next()){
+                                    winnaar_rating = rs.getInt("rating");
+                                    temp_rating = rs.getInt("temp_rating");
+                                }
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+
+                            int nieuwTempRating = 0;
+                            if(winnaar_rating>=gem_rating){
+                                nieuwTempRating = temp_rating + gem_rating;
+                            } else{
+                                nieuwTempRating = temp_rating + (2*gem_rating);
+                            }
+                            query = "UPDATE Speler SET temp_rating="+nieuwTempRating+"  WHERE id=" + idString;
+                            try {
+                                DBConnector.updateQuery(query);
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            } catch (ClassNotFoundException e1) {
+                                e1.printStackTrace();
+                            }
+
+                            query = "UPDATE Tafelindeling SET resultaat = 'W' WHERE speler=" + idString;
+                            try {
+                                DBConnector.updateQuery(query);
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            } catch (ClassNotFoundException e1) {
+                                e1.printStackTrace();
+                            }
+                            melding.setText("");
+                            fields.get(i).setBorder(BorderFactory.createLineBorder(Color.GRAY));
+                        } else{
+                            melding.setText("ID bestaat niet!");
+                        }
                     }
                 }
                 if(ingevuld) {
                     try {
+                        int nieuweRonde = ronde + 1;
+                        fields.clear();
                         frame.remove(scroll);
+                        tafelindelingPanel.removeAll();
                         showTafelindeling(frame, panel, toernooi_id, nieuweRonde);
                     } catch (SQLException e1) {
                         e1.printStackTrace();
