@@ -68,12 +68,15 @@ public class TafelindelingenTest {
                 aantal++;
             }
             int resterend = 10-aantal;
-            for(int x = 0;x<resterend;x++){
-                list.addElement(" ");
+            if(resterend>=0) {
+                for (int x = 0; x < resterend; x++) {
+                    list.addElement(" ");
+                }
             }
             JList lijst = new JList(list);
+            lijst.setPreferredSize(new Dimension(160,210));
             JPanel listPanel = new JPanel();
-            listPanel.setPreferredSize(new Dimension(100,300));
+            listPanel.setPreferredSize(new Dimension(160,210));
             listPanel.add(lijst);
             tafelindelingPanel.add(listPanel);
         }

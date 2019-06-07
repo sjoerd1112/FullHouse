@@ -16,7 +16,7 @@ public class Tafelindeling {
     private static ArrayList<Integer> IDs = new ArrayList<>();
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        ArrayList<Tafel> tafelArrayList = createTafels(9, "Normaal", 1, 1);
+        ArrayList<Tafel> tafelArrayList = createTafels(11, "Normaal", 1, 1);
     }
 
     public static ArrayList<Tafel> createTafels(int aantalSpelers, String type, int toernooi_id, int ronde_nummer) throws SQLException, ClassNotFoundException {
@@ -28,20 +28,34 @@ public class Tafelindeling {
                 tafels.add(new Tafel(aantalSpelers));
             }
             else {
-                if (aantalSpelers % 10 == 0) {
-                    aantalTafels = aantalSpelers / 10;
-                    for (int i = 0; i < aantalTafels; i++) {
-                        tafels.add(new Tafel(10));
+                if (aantalSpelers < 18) {
+                    aantalTafels = 2;
+                    if(aantalSpelers%2==0){
+                        tafels.add(new Tafel(aantalSpelers/2));
+                        tafels.add(new Tafel(aantalSpelers/2));
+                    }else{
+                        int aantal1 = (aantalSpelers-1)/2;
+                        int aantal2 = (aantalSpelers+1)/2;
+                        tafels.add(new Tafel(aantal1));
+                        tafels.add(new Tafel(aantal2));
                     }
-                } else {
-                    int restantSpelers = aantalSpelers % 9;
-                    int inTeDelenSpelers = aantalSpelers - restantSpelers;
-                    aantalTafels = inTeDelenSpelers / 9;
-                    for (int i = 0; i < aantalTafels; i++) {
-                        tafels.add(new Tafel(9));
-                    }
-                    for (int i = 0; i < restantSpelers; i++) {
-                        tafels.get(i).setAantal(tafels.get(i).getAantal() + 1);
+                }
+                else {
+                    if (aantalSpelers % 10 == 0) {
+                        aantalTafels = aantalSpelers / 10;
+                        for (int i = 0; i < aantalTafels; i++) {
+                            tafels.add(new Tafel(10));
+                        }
+                    } else {
+                        int restantSpelers = aantalSpelers % 9;
+                        int inTeDelenSpelers = aantalSpelers - restantSpelers;
+                        aantalTafels = inTeDelenSpelers / 9;
+                        for (int i = 0; i < aantalTafels; i++) {
+                            tafels.add(new Tafel(9));
+                        }
+                        for (int i = 0; i < restantSpelers; i++) {
+                            tafels.get(i).setAantal(tafels.get(i).getAantal() + 1);
+                        }
                     }
                 }
             }
