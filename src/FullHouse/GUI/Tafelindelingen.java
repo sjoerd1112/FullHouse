@@ -1,4 +1,4 @@
-package FullHouse.GUI;
+/*package FullHouse.GUI;
 
 import FullHouse.Classes.Tafel;
 import FullHouse.Classes.Tafelindeling;
@@ -133,5 +133,5 @@ public class Tafelindelingen {
             return getParent() != null ? getParent().getSize().width > getPreferredSize().width : true;
         }
     }
-
 }
+*/

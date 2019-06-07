@@ -1,76 +1,5 @@
 package FullHouse.Classes;
 
-import java.util.ArrayList;
-
-/**
- * Created by sjoer on 29-5-2019.
- */
-public class Tafelindeling {
-    private static ArrayList<Tafel> tafels = new ArrayList<Tafel>();
-    private static ArrayList<Integer> IDs = new ArrayList<Integer>();
-
-    public static void main() {
-        ArrayList<Tafel> tafelArrayList = aantalPerTafel(155);
-    }
-
-    public static ArrayList<Tafel> aantalPerTafel(int aantalSpelers) {
-        int aantalTafels;
-        if(aantalSpelers%10==0){
-            aantalTafels = aantalSpelers/10;
-            for(int i = 0;i<aantalTafels;i++){
-                tafels.add(new Tafel(10));
-            }
-        }
-        else{
-            int restantSpelers = aantalSpelers%9;
-            int inTeDelenSpelers = aantalSpelers-restantSpelers;
-            aantalTafels = inTeDelenSpelers/9;
-            for(int i = 0;i<aantalTafels;i++){
-                tafels.add(new Tafel(9));
-            }
-            for(int i = 0;i<restantSpelers;i++){
-                tafels.get(i).setAantal(tafels.get(i).getAantal()+1);
-            }
-        }
-
-        for(int i = 0;i<aantalTafels;i++){
-            Tafel tafel = tafels.get(i);
-            for(int x = 0;x<tafel.getAantal();x++) {
-                int id = (int) Math.round(Math.random()*aantalSpelers);
-                while (IDs.contains(id)) {
-                    id = (int) Math.round(Math.random()*aantalSpelers);
-                }
-                int rating = 0;
-                IDs.add(id);
-                Speler speler = new Speler(rating, id);
-                tafel.addSpeler(speler);
-            }
-        }
-
-        for(int i = 0;i<aantalTafels;i++){
-            int spelersSize = tafels.get(i).getSpelers().size();
-            System.out.println("Tafel " + (i+1) + " met " + spelersSize + " spelers");
-        }
-
-        return tafels;
-    }
-
-    public static ArrayList<Tafel> getTafels() {
-        return tafels;
-    }
-
-    public static Tafel getTafel(int i) {
-        return tafels.get(i);
-    }
-
-    public static ArrayList<Integer> getIDs() {
-        return IDs;
-    }
-}
-
-/***
-package FullHouse.Classes;
-
 import FullHouse.DB.DBConnector;
 
 import java.sql.ResultSet;
@@ -78,13 +7,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * Created by sjoer on 29-5-2019.
+ */
 
 public class Tafelindeling {
     private static ArrayList<Tafel> tafels = new ArrayList<>();
     private static ArrayList<Integer> IDs = new ArrayList<>();
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        ArrayList<Tafel> tafelArrayList = createTafels(10, "Pink Ribbon", 1, 1);
+        ArrayList<Tafel> tafelArrayList = createTafels(9, "Normaal", 1, 1);
     }
 
     public static ArrayList<Tafel> createTafels(int aantalSpelers, String type, int toernooi_id, int ronde_nummer) throws SQLException, ClassNotFoundException {
@@ -194,5 +126,3 @@ public class Tafelindeling {
         }
     }
 }
-
- ***/
