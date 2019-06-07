@@ -39,7 +39,7 @@ public class Toernooi {
 
             panel.removeAll();
             frame.remove(panel);
-            frame.setTitle("Toernooi");
+            frame.setTitle("Toernooien overzicht");
 
             JPanel toernooiPanel= new ToernooiScrollablePanel();
 
@@ -261,8 +261,14 @@ public class Toernooi {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     frame.remove(scroll);
+                    String query = "SELECT MAX(ronde) as ronde FROM Tafelindeling WHERE toernooi="+toernooiId;
                     try {
-                        Tafelindelingen.showTafelindeling(frame, panel, toernooiId, 1);
+                        ResultSet rs = DBConnector.query(query);
+                        int ronde = 1;
+                        if(rs.next()){
+                            ronde = rs.getInt("ronde")+1;
+                        }
+                        Tafelindelingen.showTafelindeling(frame, panel, toernooiId, ronde);
                     } catch (SQLException  | ClassNotFoundException e2) {
                         e2.printStackTrace();
                     }

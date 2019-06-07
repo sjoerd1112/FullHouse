@@ -37,7 +37,7 @@ public class Toernooien{
 
     public static void showToernooi(JFrame frame, int id) throws SQLException, ClassNotFoundException {
             toernooiPanel.removeAll();
-            frame.setTitle("Toernooien overzicht");
+            frame.setTitle("Toernooi");
             JButton terug = new JButton("Terug");
             JButton wijzigen = new JButton("Wijzigen");
             JButton verwijderen = new JButton("Verwijderen");

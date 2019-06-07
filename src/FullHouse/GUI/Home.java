@@ -24,7 +24,6 @@ public class Home {
             JButton spelers = new JButton("Spelers");
             JButton toernooien = new JButton("Toernooien");
             JButton masterclasses = new JButton("Masterclasses");
-            JButton medewerkers = new JButton("Medewerkers");
             JButton toevoegen = new JButton("Gebruiker toevoegen");
             JButton uitloggen = new JButton("Log uit");
             homePanel.add(toevoegen);
@@ -33,7 +32,6 @@ public class Home {
             homePanel.add(spelers);
             homePanel.add(toernooien);
             homePanel.add(masterclasses);
-            homePanel.add(medewerkers);
             addLabel(4);
             frame.add(homePanel);
 
@@ -78,13 +76,6 @@ public class Home {
                     } catch (SQLException e1) {
                         e1.printStackTrace();
                     }
-                }
-            });
-
-            medewerkers.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    System.out.println("Medewerkers");
                 }
             });
 
