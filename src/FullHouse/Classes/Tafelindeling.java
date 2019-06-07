@@ -21,7 +21,6 @@ public class Tafelindeling {
 
     public static ArrayList<Tafel> createTafels(int aantalSpelers, String type, int toernooi_id, int ronde_nummer) throws SQLException, ClassNotFoundException {
         int aantalTafels;
-        DBConnector.startConnection();
         if(type.equals("Normaal")) {
             if(aantalSpelers<9){
                 aantalTafels = 1;
@@ -59,7 +58,7 @@ public class Tafelindeling {
                     }
                 }
             }
-            addSpelersTest(aantalTafels, aantalSpelers, toernooi_id, ronde_nummer);
+            addSpelers(aantalTafels, aantalSpelers, toernooi_id, ronde_nummer);
         }
         else{
             if(aantalSpelers<5){
@@ -84,7 +83,7 @@ public class Tafelindeling {
                     }
                 }
             }
-            addSpelersTest(aantalTafels, aantalSpelers, toernooi_id, ronde_nummer);
+            addSpelers(aantalTafels, aantalSpelers, toernooi_id, ronde_nummer);
         }
         for (int i = 0; i < aantalTafels; i++) {
             int spelersSize = tafels.get(i).getSpelers().size();
@@ -93,23 +92,7 @@ public class Tafelindeling {
         return tafels;
     }
 
-    private static void addSpelers(int aantalTafels, int aantalSpelers){
-        for (int i = 0; i < aantalTafels; i++) {
-            Tafel tafel = tafels.get(i);
-            for (int x = 0; x < tafel.getAantal(); x++) {
-                int id = (int) Math.round(Math.random() * aantalSpelers);
-                while (IDs.contains(id)) {
-                    id = (int) Math.round(Math.random() * aantalSpelers);
-                }
-                int rating = 0;
-                IDs.add(id);
-                Speler speler = new Speler(rating, id);
-                tafel.addSpeler(speler);
-            }
-        }
-    }
-
-    private static void addSpelersTest(int aantalTafels, int aantalSpelers, int toernooi_id, int ronde) throws SQLException, ClassNotFoundException {
+    private static void addSpelers(int aantalTafels, int aantalSpelers, int toernooi_id, int ronde) throws SQLException, ClassNotFoundException {
         int aantal = 0;
         Random rand = new Random();
         for (int i = 0; i < aantalTafels; i++) {
@@ -134,7 +117,7 @@ public class Tafelindeling {
             for(int x = 0;x<tafel.getAantal();x++){
                 Speler speler = tafel.getSpelers().get(x);
                 int id = speler.getId();
-                String query = "INSERT INTO Tafelindeling(tafelNummer, speler, resultaat, ronde) VALUES ("+i+", "+id+", null, "+ronde+")";
+                String query = "INSERT INTO Tafelindeling(tafelNummer, speler, resultaat, ronde, toernooi) VALUES ("+i+", "+id+", null, "+ronde+", "+toernooi_id+")";
                 DBConnector.executeQuery(query);
             }
         }
