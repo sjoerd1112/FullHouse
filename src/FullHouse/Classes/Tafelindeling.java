@@ -17,6 +17,8 @@ public class Tafelindeling {
 
     public static ArrayList<Tafel> createTafels(int aantalSpelers, String type, int toernooi_id, int ronde_nummer) throws SQLException, ClassNotFoundException {
         int aantalTafels;
+        IDs.clear();
+        tafels.clear();
         if(type.equals("Regulier")) {
             if(aantalSpelers<9){
                 aantalTafels = 1;

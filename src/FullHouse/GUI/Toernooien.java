@@ -87,7 +87,7 @@ public class Toernooien{
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
-                        String query = "SELECT toernooi_id FROM Toernooi";
+                        String query = "SELECT * FROM Toernooi";
                         Toernooi.showToernooien(frame, toernooiPanel, query);
                     } catch (SQLException e1) {
                         e1.printStackTrace();

@@ -58,7 +58,7 @@ public class Home {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
-                        String query = "SELECT toernooi_id FROM Toernooi";
+                        String query = "SELECT * FROM Toernooi";
                         Toernooi.clearSearchBar();
                         Toernooi.showToernooien(frame, homePanel, query);
                     } catch (SQLException e1) {

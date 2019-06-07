@@ -8,17 +8,25 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static FullHouse.Classes.checkDatum.checkDateFormat;
 
 public class addMasterclass {
     private static boolean created = false;
     private static JPanel addMasterclassPanel = new JPanel(new GridLayout(5, 5, 5, 5));
+    private static JComboBox<String> locatie;
 
     public static void showAddMasterclass(JFrame frame, JPanel panel) {
-        if (!created) {
+
+            addMasterclassPanel.removeAll();
             frame.setTitle("Masterclass toevoegen");
             frame.remove(panel);
+
+            String[] locaties = new String[]{"Amsterdam", "Den Haag", "Utrecht", "Eindhoven", "Arnhem"};
+            locatie = new JComboBox<>(locaties);
 
             JButton terug = new JButton("Terug");
             addMasterclassPanel.add(terug);
@@ -33,6 +41,7 @@ public class addMasterclass {
             JTextField kosten = new JTextField();
             JTextField vereiste_rating = new JTextField();
             JTextField max_aantallen = new JTextField();
+
             addMasterclassPanel.add(new JLabel("<html>Datum:<br>(dd-mm-jjjj)</html>: "));
             addMasterclassPanel.add(datum);
             addMasterclassPanel.add(new JLabel("<html>Begintijd:<br>(hh:mm:ss)</html>: "));
@@ -45,6 +54,15 @@ public class addMasterclass {
             addMasterclassPanel.add(vereiste_rating);
             addMasterclassPanel.add(new JLabel("Maximum aantal: "));
             addMasterclassPanel.add(max_aantallen);
+            addMasterclassPanel.add(new JLabel("Locatie: "));
+            addMasterclassPanel.add(locatie);
+
+            clearTextmC(datum);
+            clearTextmC(begintijd);
+            clearTextmC(eindtijd);
+            clearTextmC(kosten);
+            clearTextmC(vereiste_rating);
+            clearTextmC(max_aantallen);
 
             frame.add(addMasterclassPanel);
             frame.pack();
@@ -113,7 +131,7 @@ public class addMasterclass {
 
                     if (ingevuld) {
                         melding.setText("");
-                        String query = "INSERT INTO masterClass(datum, begintijd, eindtijd, kosten, vereiste_rating, max_aantallen) VALUES ('"+gbdate+"', '"+begintijd.getText()+"', '"+eindtijd.getText()+"', '"+kosten.getText()+"', '"+vereiste_rating.getText()+"', '"+max_aantallen.getText()+"')";
+                        String query = "INSERT INTO masterClass(datum, begintijd, eindtijd, kosten, vereiste_rating, max_aantallen, locatie) VALUES ('"+gbdate+"', '"+begintijd.getText()+"', '"+eindtijd.getText()+"', '"+kosten.getText()+"', '"+vereiste_rating.getText()+"', '"+max_aantallen.getText()+"', '" + locatie.getSelectedItem() +"')";
                         try {
                             DBConnector.executeQuery(query);
                             query = "SELECT code FROM masterClass WHERE code = (SELECT max(code) FROM masterClass)";
@@ -144,13 +162,10 @@ public class addMasterclass {
                 }
             });
             created = true;
-        }
-        else{
-            frame.setTitle("Masterclass toevoegen");
-            frame.remove(panel);
-            frame.add(addMasterclassPanel);
-            frame.pack();
-            frame.setSize(800,250);
-        }
+    }
+
+    public static void clearTextmC(JTextField field) {
+        field.setText("");
+        field.setBorder(BorderFactory.createLineBorder(Color.GRAY));
     }
 }

@@ -86,7 +86,6 @@ public class Tafelindelingen {
                 }
             }
         }
-
         tafelindelingPanel.setLayout(new FlowLayout(FlowLayout.LEADING, 10, 10));
         JButton terug = new JButton("Terug");
         terug.setPreferredSize(new Dimension(100, 25));
