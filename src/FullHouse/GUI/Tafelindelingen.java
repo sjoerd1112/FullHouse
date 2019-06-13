@@ -91,7 +91,7 @@ public class Tafelindelingen {
         tafelindelingPanel.add(terug);
 
         JButton volgende = new JButton("Volgende");
-        volgende.setPreferredSize(new Dimension(100,25));
+        volgende.setPreferredSize(new Dimension(100, 25));
         tafelindelingPanel.add(volgende);
 
         JLabel melding = new JLabel();

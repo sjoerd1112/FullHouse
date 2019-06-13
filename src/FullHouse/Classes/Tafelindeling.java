@@ -15,7 +15,14 @@ public class Tafelindeling {
     private static ArrayList<Tafel> tafels = new ArrayList<>();
     private static ArrayList<Integer> IDs = new ArrayList<>();
 
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+        DBConnector.startConnection();
+        createTafels(11, "Regulier", 1, 2);
+    }
+
     public static ArrayList<Tafel> createTafels(int aantalSpelers, String type, int toernooi_id, int ronde_nummer) throws SQLException, ClassNotFoundException {
+        IDs.clear();
+        tafels.clear();
         int aantalTafels;
         IDs.clear();
         tafels.clear();
@@ -106,7 +113,8 @@ public class Tafelindeling {
                     String query = "SELECT id FROM Speler JOIN toernooi_inschrijving ON Speler.id = toernooi_inschrijving.speler WHERE toernooi_inschrijving.toernooi=" + toernooi_id;
                     rs = DBConnector.query(query);
                 } else{
-                    String query = "SELECT speler as id FROM Tafelindeling WHERE resultaat='W' AND toernooi="+toernooi_id+" AND ronde="+(ronde-1);
+                    int oudeRonde = ronde -1;
+                    String query = "SELECT speler as id FROM Tafelindeling WHERE resultaat='W' AND toernooi="+toernooi_id+" AND ronde="+oudeRonde;
                     rs = DBConnector.query(query);
                 }
                 if (rs.absolute(id)) {
