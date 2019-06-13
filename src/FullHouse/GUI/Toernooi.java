@@ -254,6 +254,7 @@ public class Toernooi {
             panels.clear();
             while(rs.next()){
                 ingeschreven(rs, toernooiId);
+                aantal++;
             }
             setcheckBox();
 
